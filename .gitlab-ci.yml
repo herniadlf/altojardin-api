@@ -1,0 +1,38 @@
+image: ruby:2.5.1
+services:
+  - postgres:9.5
+variables:
+  POSTGRES_DB: deliveryapi_test
+  POSTGRES_USER: deliveryapi
+  POSTGRES_PASSWORD: deliveryapi
+  DB_HOST: postgres
+stages:
+  - build
+  - deploy_staging
+  - deploy_release
+
+job_build:
+  stage: build
+  script:
+    - apt-get update -qq && apt-get install -y -qq postgresql postgresql-contrib libpq-dev cmake
+    - ruby -v
+    - which ruby
+    - gem install bundler --no-ri --no-rdoc
+    - bundle install --without staging production
+    - RACK_ENV=test bundle exec rake
+
+#job_deploy_staging:
+#  stage: deploy_staging
+#  script:
+#    - gem install dpl -v 1.10.12
+#    - dpl --provider=heroku --app=staging app on heroku --api-key=$HEROKU_STAGING_API_KEY
+#  only:
+#    - staging
+#
+#job_deploy_release:
+#  stage: deploy_release
+#  script:
+#    - gem install dpl -v 1.10.12
+#    - dpl --provider=heroku --app=production app on heroku --api-key=$HEROKU_RELEASE_API_KEY
+#  only:
+#    - master

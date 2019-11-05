@@ -1,0 +1,8 @@
+.vagrant/
+*.log
+.idea/*
+.idea
+reports/
+
+/workspace.xml
+*iml
