@@ -20,6 +20,7 @@ gem 'clockwork'
 gem 'erubis', '~> 2.7.0'
 gem 'faraday'
 gem 'json'
+gem 'rack-parser'
 gem 'therubyracer'
 gem 'twitter'
 
