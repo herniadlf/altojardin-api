@@ -1,6 +1,7 @@
 DeliveryApi::App.controllers do
-  get '/reset' do
-    User.destroy
+  post '/reset' do
+    ClientRepository.new.delete_all
+    UserRepository.new.delete_all
     'Ok'
   end
 end

@@ -1,7 +1,7 @@
 require 'faraday'
 require 'json'
 
-BASE_URL = ENV['BASE_URL'] || 'http://localhost:4567'
+BASE_URL = ENV['BASE_URL'] || 'http://localhost:3000'
 API_KEY = ENV['API_KEY'] || 'zaraza'
 
 CLIENT_BASE_URL = BASE_URL + '/client'
@@ -32,8 +32,4 @@ end
 
 def change_order_status_url(order_id)
   BASE_URL + "/order/#{order_id}/status"
-end
-
-Around do |_scenario, block|
-  DB.transaction(rollback: :always, auto_savepoint: true) { block.call }
 end

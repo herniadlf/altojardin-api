@@ -14,8 +14,9 @@ end
 Entonces('obtiene un numero unico de cliente') do
   expect(@response.status).to eq(200)
   parsed_response = JSON.parse(@response.body)
-  @client_id = parsed_response['client_id']
-  expect(@client_id).to be.positive?
+  puts(parsed_response)
+  @client_id = parsed_response['client_id'].to_i
+  expect(@client_id.positive?).to be true
 end
 
 Dado('el repartidor {string}') do |username|
@@ -30,7 +31,7 @@ end
 Entonces('obtiene un numero unico de repartidor') do
   expect(@response.status).to eq(200)
   parsed_response = JSON.parse(@response.body)
-  expect(parsed_response['delivery_id']).to be.positive?
+  expect(parsed_response['delivery_id'].positive?).to be true
 end
 
 Entonces('obtiene un mensaje de error por nombre de usuario inválido') do
