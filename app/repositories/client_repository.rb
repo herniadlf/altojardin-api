@@ -3,8 +3,7 @@ class ClientRepository < BaseRepository
   self.model_class = 'Client'
 
   def save(a_record)
-    UserRepository.new.save(a_record)
-    super a_record
+    UserRepository.new.save(a_record) && super(a_record)
   end
 
   def find_by_telegram_id(telegram_id)
