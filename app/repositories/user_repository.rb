@@ -11,7 +11,8 @@ class UserRepository < BaseRepository
 
   def changeset(user)
     {
-      telegram_id: user.telegram_id
+      telegram_id: user.telegram_id,
+      username: user.username
     }
   end
 end

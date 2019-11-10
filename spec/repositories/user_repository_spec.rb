@@ -5,7 +5,7 @@ describe UserRepository do
   let(:repository) { described_class.new }
 
   let(:new_user) do
-    user = User.new(telegram_id: '123')
+    user = User.new(telegram_id: '123', username: 'username')
     repository.save(user)
     user
   end
@@ -14,5 +14,6 @@ describe UserRepository do
     user = repository.find_by_telegram_id(new_user.telegram_id)
 
     expect(user.telegram_id).to eq '123'
+    expect(user.username).to eq 'username'
   end
 end
