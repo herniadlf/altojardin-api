@@ -7,5 +7,6 @@ describe Client do
     it { is_expected.to respond_to(:username) }
     it { is_expected.to respond_to(:phone) }
     it { is_expected.to respond_to(:address) }
+    it { is_expected.to respond_to(:user_id) }
   end
 end
