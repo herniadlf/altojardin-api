@@ -9,7 +9,7 @@ describe ClientRepository do
       telegram_id: '123',
       username: 'username',
       phone: '1233-1233',
-      address: 'callefalsa'
+      address: 'callefalsa 123'
     )
     repository.save(new_client)
     new_client
