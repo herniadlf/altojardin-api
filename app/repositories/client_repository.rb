@@ -4,11 +4,6 @@ class ClientRepository < BaseRepository
 
   def save(a_record)
     UserRepository.new.save(a_record)
-    puts(a_record.id)
-    puts(a_record.user_id)
-    puts(a_record.address)
-    puts(a_record.phone)
-    puts(a_record.username)
     super a_record
   end
 
