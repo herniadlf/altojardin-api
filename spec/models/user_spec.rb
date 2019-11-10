@@ -9,6 +9,8 @@ describe User do
     it 'should not be valid with an invalid name' do
       user = described_class.new(username: '#!?', telegram_id: '')
       expect(user.valid?).to be false
+      match = user.errors.messages[:username].any? { |error| error == 'invalid_username' }
+      expect(match).to be true
     end
   end
 end
