@@ -1,8 +1,12 @@
 class User
-  attr_reader :user_id, :telegram_id
+  include ActiveModel::Validations
 
-  def intialize(data = {})
-    @user_id = data[:user_id]
+  attr_accessor :id, :telegram_id, :created_on, :updated_on
+
+  def initialize(data = {})
+    @id = data[:id]
     @telegram_id = data[:telegram_id]
+    @created_on = data[:created_on]
+    @updated_on = data[:updated_on]
   end
 end

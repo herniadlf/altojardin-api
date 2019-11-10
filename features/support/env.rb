@@ -33,3 +33,7 @@ end
 def change_order_status_url(order_id)
   BASE_URL + "/order/#{order_id}/status"
 end
+
+Around do |_scenario, block|
+  DB.transaction(rollback: :always, auto_savepoint: true) { block.call }
+end
