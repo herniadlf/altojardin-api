@@ -32,7 +32,8 @@ describe Client do
   end
 
   it 'should be valid with an address like "Corrientes 1847"' do
-    client = described_class.new(username: 'Carlos', phone: '4444-4123', address: 'Corrientes 1847')
+    client = described_class.new(telegram_id: '123456', username: 'Carlos',
+                                 phone: '4444-4123', address: 'Corrientes 1847')
     expect(client.valid?).to be true
     match = client.errors.messages[:address].any? { |error| error == 'invalid_address' }
     expect(match).to be false

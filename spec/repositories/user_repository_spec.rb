@@ -16,4 +16,11 @@ describe UserRepository do
     expect(user.telegram_id).to eq '123'
     expect(user.username).to eq 'username'
   end
+
+  it 'should find user by username' do
+    user = repository.find_by_username(new_user.username)
+
+    expect(user.username).to eq 'username'
+    expect(user.telegram_id).to eq '123'
+  end
 end
