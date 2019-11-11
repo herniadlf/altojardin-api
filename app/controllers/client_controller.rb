@@ -12,10 +12,10 @@ DeliveryApi::App.controllers :client do
     }.to_json
   end
 
-  get '/', with: :telegram_id, provides: :json do
+  get '/', provides: :json do
     telegram_id = params[:telegram_id]
     client = ClientRepository.new.find_by_telegram_id telegram_id
-    return { 'client_id': client.id }.to_json unless client.nil?
+    return { 'client_id': client.user_id }.to_json unless client.nil?
 
     status 404
     { 'error': 'Cliente no encontrado' }.to_json
