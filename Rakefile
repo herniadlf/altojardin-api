@@ -46,6 +46,7 @@ if %w[development test travis].include?(RACK_ENV)
 
   require 'rspec/core/rake_task'
   RSpec::Core::RakeTask.new(:spec) do |t|
+    Rake::Task['db:migrate'].invoke
     t.pattern = './spec/**/*_spec.rb'
   end
 
