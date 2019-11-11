@@ -22,4 +22,11 @@ describe ClientRepository do
     expect(client.username).to eq 'username'
     expect(client.phone).to eq '1233-1233'
   end
+
+  it 'should not find user with telegram id 456' do
+    telegram_id = '456'
+    client = repository.find_by_telegram_id(telegram_id)
+
+    expect(client.nil?).to eq true
+  end
 end

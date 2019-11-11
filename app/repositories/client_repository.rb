@@ -8,6 +8,8 @@ class ClientRepository < BaseRepository
 
   def find_by_telegram_id(telegram_id)
     user = UserRepository.new.find_by_telegram_id(telegram_id)
+    return nil if user.nil?
+
     find(user.id)
   end
 
