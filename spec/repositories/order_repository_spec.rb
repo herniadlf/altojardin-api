@@ -18,4 +18,11 @@ describe OrderRepository do
     expect(order.nil?).to eq false
     expect(order.menu_id).to eq 1
   end
+
+  it 'creation should fail if user is empty' do
+    order = Order.new(menu_id: 1)
+    repository.save(order)
+    expect(order.valid?).to eq false
+    expect(order.errors.messages[order.errors.messages.keys.first][0]).to eq 'empty_user'
+  end
 end
