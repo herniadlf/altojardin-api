@@ -3,7 +3,7 @@ Sequel.migration do
     create_table(:orders) do
       primary_key :id
       Integer :user_id
-      Integer :menu_id
+      String :menu
       Date :created_on
       Date :updated_on
       foreign_key([:user_id], :users, key: :id)

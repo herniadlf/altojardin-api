@@ -11,16 +11,16 @@ describe OrderRepository do
   end
 
   it 'should find created order' do
-    order = Order.new(user_id: order_owner.id, menu_id: 1)
+    order = Order.new(user_id: order_owner.id, menu: 'menu_individual')
     repository.save(order)
     order = repository.first
 
     expect(order.nil?).to eq false
-    expect(order.menu_id).to eq 1
+    expect(order.menu).to eq 'menu_individual'
   end
 
   it 'creation should fail if user is empty' do
-    order = Order.new(menu_id: 1)
+    order = Order.new(menu_id: 'menu_individual')
     repository.save(order)
     expect(order.valid?).to eq false
     expect(order.errors.messages[order.errors.messages.keys.first][0]).to eq 'empty_user'
