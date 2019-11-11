@@ -1,26 +1,35 @@
-require File.expand_path(File.dirname(__FILE__) + '/../../config/boot')
+require 'faraday'
+require 'json'
 
-require 'capybara/cucumber'
-require 'rspec/expectations'
+BASE_URL = ENV['BASE_URL'] || 'http://localhost:3000'
+API_KEY = ENV['API_KEY'] || 'zaraza'
 
-require 'simplecov'
+CLIENT_BASE_URL = BASE_URL + '/client'
+REGISTER_DELIVERY_URL = BASE_URL + '/delivery'
+SUBMIT_ORDER_URL = BASE_URL + '/order'
+QUERY_ORDER_URL = BASE_URL + '/order'
+QUERY_COMISION_URL = BASE_URL + '/commission'
 
-SimpleCov.start do
-  root(File.join(File.dirname(__FILE__), '..', '..'))
-  coverage_dir 'reports/coverage'
-  add_filter '/spec/'
-  add_filter '/features/'
-  add_filter '/admin/'
-  add_filter '/db/'
-  add_filter '/config/'
-  add_group 'Models', 'app/models'
-  add_group 'Controllers', 'app/controllers'
-  add_group 'Helpers', 'app/helpers'
+def query_commission_url(order_id)
+  BASE_URL + "/commission/#{order_id}"
 end
 
-Around do |_scenario, block|
-  DB.transaction(rollback: :always, auto_savepoint: true) { block.call }
+def cancel_order_url(order_id)
+  BASE_URL + "/order/#{order_id}/cancel"
 end
 
-# Capybara.default_driver = :selenium
-Capybara.app = DeliveryApi::App.tap { |app| }
+def header
+  { 'Content-Type' => 'application/json', 'api-key' => API_KEY }
+end
+
+def submit_order_url(username)
+  CLIENT_BASE_URL + "/#{username}/order"
+end
+
+def query_order_status_url(username, order_id)
+  CLIENT_BASE_URL + "/#{username}/order/#{order_id}"
+end
+
+def change_order_status_url(order_id)
+  BASE_URL + "/order/#{order_id}/status"
+end

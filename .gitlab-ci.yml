@@ -21,18 +21,20 @@ job_build:
     - bundle install --without staging production
     - RACK_ENV=test bundle exec rake
 
-#job_deploy_staging:
-#  stage: deploy_staging
-#  script:
-#    - gem install dpl -v 1.10.12
-#    - dpl --provider=heroku --app=staging app on heroku --api-key=$HEROKU_STAGING_API_KEY
-#  only:
-#    - staging
-#
-#job_deploy_release:
-#  stage: deploy_release
-#  script:
-#    - gem install dpl -v 1.10.12
-#    - dpl --provider=heroku --app=production app on heroku --api-key=$HEROKU_RELEASE_API_KEY
-#  only:
-#    - master
+job_deploy_staging:
+  stage: deploy_staging
+  script:
+    - gem install dpl -v 1.10.12
+    - dpl --provider=heroku --app=altojardin-tp2-api-staging --api-key=$HEROKU_API_KEY
+    - RACK_ENV=staging
+  only:
+    - staging
+
+job_deploy_release:
+  stage: deploy_release
+  script:
+    - gem install dpl -v 1.10.12
+    - dpl --provider=heroku --app=altojardin-tp2-api-prod --api-key=$HEROKU_API_KEY
+    - RACK_ENV=prod
+  only:
+    - master
