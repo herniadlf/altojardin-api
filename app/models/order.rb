@@ -20,5 +20,5 @@ class Order
     errors.add(:base, 'invalid_menu') unless VALID_MENUS.include? @menu
   end
 
-  VALID_MENUS = %w[menu_individual menu_pareja menu_familiar].freeze
+  VALID_MENUS = %w[menu_individual menu_parejas menu_familiar].freeze
 end
