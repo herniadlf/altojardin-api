@@ -20,9 +20,16 @@ describe OrderRepository do
   end
 
   it 'creation should fail if user is empty' do
-    order = Order.new(menu_id: 'menu_individual')
+    order = Order.new(menu: 'menu_individual')
     repository.save(order)
     expect(order.valid?).to eq false
     expect(order.errors.messages[order.errors.messages.keys.first][0]).to eq 'empty_user'
+  end
+
+  it 'creation should fail with invalid menu' do
+    order = Order.new(user_id: order_owner.id, menu: 'big_mac')
+    repository.save(order)
+    expect(order.valid?).to eq false
+    expect(order.errors.messages[order.errors.messages.keys.first][0]).to eq 'invalid_menu'
   end
 end

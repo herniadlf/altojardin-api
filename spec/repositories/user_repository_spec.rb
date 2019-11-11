@@ -17,9 +17,10 @@ describe UserRepository do
     expect(user.username).to eq 'username'
   end
 
-  it 'should fail when user has no telegram id' do
-    user = User.new(username: 'username')
-    repository.save(user)
-    expect(user.valid?).to eq false
+  it 'should find user by username' do
+    user = repository.find_by_username(new_user.username)
+
+    expect(user.username).to eq 'username'
+    expect(user.telegram_id).to eq '123'
   end
 end
