@@ -7,7 +7,6 @@ class User
 
   validates :username, presence: true, format: { with: VALID_REGEX,
                                                  message: 'invalid_username' }
-
   def initialize(data = {})
     @id = data[:id]
     @telegram_id = data[:telegram_id]

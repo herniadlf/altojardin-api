@@ -7,6 +7,11 @@ class UserRepository < BaseRepository
     load_object(row) unless row.nil?
   end
 
+  def find_by_username(username)
+    row = dataset.first(username: username)
+    load_object(row) unless row.nil?
+  end
+
   protected
 
   def changeset(user)
