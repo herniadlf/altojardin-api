@@ -27,9 +27,12 @@
 #
 Padrino.configure_apps do
   # enable :sessions
-  set :session_secret, '7e63453fa5919ce024c6431db73166888f20a4fd5c4effd8e49dadce8f7c630a'
-  set :protection, true
-  set :protect_from_csrf, true
+  # set :session_secret, '7e63453fa5919ce024c6431db73166888f20a4fd5c4effd8e49dadce8f7c630a'
+  # set :protection, true
+  # set :protect_from_csrf, true
+  use Rack::Parser, content_types: {
+    'application/json' => proc { |body| ::MultiJson.decode body }
+  }
 end
 
 # Mounts the core application for this project
