@@ -32,4 +32,11 @@ describe OrderRepository do
     expect(order.valid?).to eq false
     expect(order.errors.messages[order.errors.messages.keys.first][0]).to eq 'invalid_menu'
   end
+
+  it 'should find status received in created order' do
+    repository.save(Order.new(user_id: order_owner.id, menu: 'menu_individual'))
+    order = repository.first
+
+    expect(order.status).to eq OrderStatus::RECEIVED
+  end
 end
