@@ -7,6 +7,8 @@ class Order
 
   validate :valid_menu
   validates :user_id, presence: { message: 'empty_user' }
+  validates :status, inclusion: { in: OrderStatus::RECEIVED..OrderStatus::CANCELLED,
+                                  message: 'invalid_status' }
 
   def initialize(data = {})
     @id = data[:id]
