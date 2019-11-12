@@ -14,7 +14,7 @@ class Order
     @menu = data[:menu]
     @created_on = data[:created_on]
     @updated_on = data[:updated_on]
-    @status = defined?(data[:status]) ? data[:status] : OrderStatus::RECEIVED
+    @status = data[:status].nil? ? OrderStatus::RECEIVED : data[:status]
   end
 
   private
