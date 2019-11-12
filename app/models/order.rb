@@ -19,6 +19,10 @@ class Order
     @status = data[:status].nil? ? OrderStatus::RECEIVED : data[:status]
   end
 
+  def status_label
+    OrderStatus::LABELS[@status]
+  end
+
   private
 
   def valid_menu
