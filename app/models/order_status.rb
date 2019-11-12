@@ -1,0 +1,8 @@
+module OrderStatus
+  RECEIVED = 0
+  IN_PROGRESS = 1
+  IN_TRANSIT = 2
+  WAITING = 3
+  DELIVERED = 4
+  CANCELLED = 5
+end

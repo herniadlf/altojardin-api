@@ -1,7 +1,9 @@
+require_relative 'order_status'
+
 class Order
   include ActiveModel::Validations
 
-  attr_accessor :id, :user_id, :menu, :created_on, :updated_on
+  attr_accessor :id, :user_id, :menu, :created_on, :updated_on, :status
 
   validate :valid_menu
   validates :user_id, presence: { message: 'empty_user' }
@@ -12,6 +14,7 @@ class Order
     @menu = data[:menu]
     @created_on = data[:created_on]
     @updated_on = data[:updated_on]
+    @status = defined?(data[:status]) ? data[:status] : OrderStatus::RECEIVED
   end
 
   private
