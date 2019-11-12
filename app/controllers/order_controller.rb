@@ -22,6 +22,6 @@ DeliveryApi::App.controllers :client do
     return { 'order_status': order.status_label }.to_json unless order.nil?
 
     status 404
-    { 'error': 'Pedido no encontrado' }.to_json
+    { 'error': 'pedido no encontrado' }.to_json
   end
 end
