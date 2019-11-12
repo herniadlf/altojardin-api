@@ -7,7 +7,8 @@ class OrderRepository < BaseRepository
   def changeset(order)
     {
       user_id: order.user_id,
-      menu: order.menu
+      menu: order.menu,
+      status: order.status
     }
   end
 end

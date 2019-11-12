@@ -39,4 +39,13 @@ describe OrderRepository do
 
     expect(order.status).to eq OrderStatus::RECEIVED
   end
+
+  it 'should persist status changes' do
+    repository.save(Order.new(user_id: order_owner.id, menu: 'menu_individual'))
+    order = repository.first
+    order.status = OrderStatus::IN_PROGRESS
+    repository.save(order)
+
+    expect(repository.first.status).to eq OrderStatus::IN_PROGRESS
+  end
 end
