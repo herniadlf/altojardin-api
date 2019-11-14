@@ -2,9 +2,11 @@ class OrderRepository < BaseRepository
   self.table_name = :orders
   self.model_class = 'Order'
 
-  def find_for_user(order_id, user_id)
+  def find_for_user(order_id, user)
     order = find(order_id)
-    order unless order.user_id != user_id
+    order unless order.nil? || order.user_id != user.id
+  rescue StandardError
+    nil
   end
 
   protected

@@ -59,6 +59,6 @@ describe OrderRepository do
     order = Order.new(user_id: order_owner.id, menu: 'menu_individual')
     repository.save(order)
     expect(repository.find_for_user(order.id, another_owner.id).nil?).to eq true
-    expect(repository.find_for_user(order.id, order_owner.id).nil?).to eq false
+    expect(repository.find_for_user(order.id, order_owner).nil?).to eq false
   end
 end
