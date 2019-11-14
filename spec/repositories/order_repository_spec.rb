@@ -55,10 +55,30 @@ describe OrderRepository do
     expect(repository.first.status).to eq OrderStatus::IN_PROGRESS
   end
 
-  it 'should not find status from another user' do
+  it 'should not find for username from unexistent order' do
+    result = repository.find_for_username(1, another_owner.username)
+    expect(result[:error]).to eq 'there are no orders'
+  end
+
+  it 'should not find for username from another user order' do
     order = Order.new(user_id: order_owner.id, menu: 'menu_individual')
     repository.save(order)
-    expect(repository.find_for_user(order.id, another_owner.id).nil?).to eq true
-    expect(repository.find_for_user(order.id, order_owner).nil?).to eq false
+    result = repository.find_for_username(order.id, another_owner.username)
+    expect(result[:error]).to eq 'order not exist'
+  end
+
+  it 'should not find for username if it not exist' do
+    order = Order.new(user_id: order_owner.id, menu: 'menu_individual')
+    repository.save(order)
+    result = repository.find_for_username(order.id, 'notexistentusername')
+    expect(result[:error]).to eq 'user not exist'
+    expect(result[:order]).to eq nil
+  end
+
+  it 'should find order status for username' do
+    order = Order.new(user_id: order_owner.id, menu: 'menu_individual')
+    repository.save(order)
+    result = repository.find_for_username(order.id, order_owner.username)
+    expect(result[:order].status_label).to eq 'recibido'
   end
 end
