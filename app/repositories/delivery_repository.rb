@@ -1,6 +1,6 @@
 class DeliveryRepository < BaseRepository
-  self.table_name = :clients
-  self.model_class = 'Client'
+  self.table_name = :deliveries
+  self.model_class = 'Delivery'
 
   def save(a_record)
     UserRepository.new.save(a_record) && super(a_record)
