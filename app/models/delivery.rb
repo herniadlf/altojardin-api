@@ -1,4 +1,5 @@
 require_relative '../../app/models/user'
 
-class Client < User
+class Delivery < User
+  attr_accessor :user_id
 end
