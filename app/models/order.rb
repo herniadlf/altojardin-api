@@ -1,10 +1,14 @@
+require_relative 'order_status'
+
 class Order
   include ActiveModel::Validations
 
-  attr_accessor :id, :user_id, :menu, :created_on, :updated_on
+  attr_accessor :id, :user_id, :menu, :created_on, :updated_on, :status
 
   validate :valid_menu
   validates :user_id, presence: { message: 'empty_user' }
+  validates :status, inclusion: { in: OrderStatus::RECEIVED..OrderStatus::CANCELLED,
+                                  message: 'invalid_status' }
 
   def initialize(data = {})
     @id = data[:id]
@@ -12,6 +16,11 @@ class Order
     @menu = data[:menu]
     @created_on = data[:created_on]
     @updated_on = data[:updated_on]
+    @status = data[:status].nil? ? OrderStatus::RECEIVED : data[:status]
+  end
+
+  def status_label
+    OrderStatus::LABELS[@status]
   end
 
   private
