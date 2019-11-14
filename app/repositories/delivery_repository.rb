@@ -8,9 +8,9 @@ class DeliveryRepository < BaseRepository
 
   protected
 
-  def changeset(client)
+  def changeset(user)
     {
-      user_id: client.id
+      user_id: user.id
     }
   end
 
@@ -28,5 +28,13 @@ class DeliveryRepository < BaseRepository
 
   def pk_column
     Sequel[self.class.table_name][:user_id]
+  end
+
+  def load_object(a_record)
+    delivery = super
+    user = UserRepository.new.find(delivery.user_id)
+    delivery.telegram_id = user.telegram_id
+    delivery.username = user.username
+    delivery
   end
 end

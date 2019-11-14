@@ -6,7 +6,7 @@ describe DeliveryRepository do
 
   let(:new_delivery) do
     new_delivery = Delivery.new(
-      username: 'username'
+      username: 'delivery'
     )
     repository.save(new_delivery)
     new_delivery
@@ -14,8 +14,7 @@ describe DeliveryRepository do
 
   it 'should find delivery' do
     id = new_delivery.id
-    delivery = repository.find(new_delivery.id)
-
+    delivery = repository.find(id)
     expect(delivery.user_id).to eq id
   end
 end
