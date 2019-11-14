@@ -19,5 +19,12 @@ describe User do
       match = user.errors.messages[:username].any? { |error| error == 'invalid_username' }
       expect(match).to be true
     end
+
+    it 'should not be valid with a long name' do
+      user = described_class.new(username: 'elseniordelosanillos', telegram_id: '')
+      expect(user.valid?).to be false
+      match = user.errors.messages[:username].any? { |error| error == 'invalid_username' }
+      expect(match).to be true
+    end
   end
 end

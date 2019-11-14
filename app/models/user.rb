@@ -3,7 +3,7 @@ class User
 
   attr_accessor :id, :telegram_id, :created_on, :updated_on, :username
 
-  VALID_REGEX = /[a-z0-9_]{5,}/i
+  VALID_REGEX = /\A[a-z0-9_]{5,19}\z/i
 
   validates :username, presence: true, format: { with: VALID_REGEX,
                                                  message: 'invalid_username' }
