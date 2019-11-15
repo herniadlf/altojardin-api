@@ -16,6 +16,12 @@ describe OrderRepository do
     user
   end
 
+  let(:delivery) do
+    delivery = Delivery.new(username: 'kitopizzas')
+    DeliveryRepository.new.save(delivery)
+    delivery
+  end
+
   it 'should find created order' do
     order = Order.new(user_id: order_owner.id, menu: 'menu_individual')
     repository.save(order)
@@ -81,5 +87,12 @@ describe OrderRepository do
     result = repository.find_for_username(order.id, order_owner.username)
     expect(result[:order].status_label[:key]).to eq 'recibido'
     expect(result[:order].status_label[:message]).to eq "Su pedido #{order.id} ha sido RECIBIDO"
+  end
+
+  it 'should have a delivery assignment' do
+    order = Order.new(user_id: order_owner.id, menu: 'menu_individual', assigned_to: delivery.id)
+    repository.save(order)
+    result = repository.find(order.id)
+    expect(result.assigned_to).to eq delivery.id
   end
 end

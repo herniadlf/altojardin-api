@@ -28,7 +28,8 @@ class OrderRepository < BaseRepository
     {
       user_id: order.user_id,
       menu: order.menu,
-      status: order.status
+      status: order.status,
+      assigned_to: order.assigned_to
     }
   end
 end
