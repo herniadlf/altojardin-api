@@ -20,8 +20,7 @@ class Order
   end
 
   def update_status(new_status)
-    @status = new_status
-    OrderRepository.new.save(self)
+    OrderStatus.observer(self, new_status).update
   end
 
   def status_label
