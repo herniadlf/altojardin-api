@@ -17,4 +17,11 @@ describe DeliveryRepository do
     delivery = repository.find(id)
     expect(delivery.user_id).to eq id
   end
+
+  it 'should persist available delivery' do
+    expect(repository.find(new_delivery.id).available).to eq true
+    new_delivery.available = false
+    repository.save(new_delivery)
+    expect(repository.find(new_delivery.id).available).to eq false
+  end
 end

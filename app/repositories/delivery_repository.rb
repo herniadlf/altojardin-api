@@ -10,7 +10,8 @@ class DeliveryRepository < BaseRepository
 
   def changeset(user)
     {
-      user_id: user.id
+      user_id: user.id,
+      available: user.available
     }
   end
 

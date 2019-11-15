@@ -6,6 +6,6 @@ class Delivery < User
   def initialize(data = {})
     super data
     @user_id = data[:user_id]
-    @available = data[:available]
+    @available = data[:available].nil? ? true : data[:available]
   end
 end
