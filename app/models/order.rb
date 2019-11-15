@@ -6,9 +6,9 @@ class Order
   attr_accessor :id, :user_id, :menu, :created_on, :updated_on, :status
 
   validate :valid_menu
-  validates :user_id, presence: { message: 'empty_user' }
+  validates :user_id, presence: { message: Messages::USER_NOT_EXIST_KEY }
   validates :status, inclusion: { in: OrderStatus::RECEIVED..OrderStatus::CANCELLED,
-                                  message: 'invalid_status' }
+                                  message: Messages::INVALID_STATUS }
 
   def initialize(data = {})
     @id = data[:id]
@@ -20,13 +20,16 @@ class Order
   end
 
   def status_label
-    OrderStatus::LABELS[@status]
+    status = OrderStatus::STATUS_MAP[@status]
+    key = status[:key]
+    message = "Su pedido #{id} #{status[:label]}"
+    { key: key, message: message }
   end
 
   private
 
   def valid_menu
-    errors.add(:base, 'invalid_menu') unless VALID_MENUS.include? @menu
+    errors.add(:menu, Messages::INVALID_MENU) unless VALID_MENUS.include? @menu
   end
 
   VALID_MENUS = %w[menu_individual menu_parejas menu_familiar].freeze

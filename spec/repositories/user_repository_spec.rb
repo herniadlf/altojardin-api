@@ -5,22 +5,20 @@ describe UserRepository do
   let(:repository) { described_class.new }
 
   let(:new_user) do
-    user = User.new(telegram_id: '123', username: 'username')
+    user = User.new(username: 'username')
     repository.save(user)
     user
   end
 
-  it 'should find user with telegram id 123' do
-    user = repository.find_by_telegram_id(new_user.telegram_id)
-
-    expect(user.telegram_id).to eq '123'
+  it 'should find user by username' do
+    result = repository.find_by_username(new_user.username)
+    user = result[:user]
     expect(user.username).to eq 'username'
   end
 
-  it 'should find user by username' do
-    user = repository.find_by_username(new_user.username)
-
-    expect(user.username).to eq 'username'
-    expect(user.telegram_id).to eq '123'
+  it 'should not find user with unexistent username' do
+    result = repository.find_by_username('nameuser')
+    expect(result[:user].nil?).to eq true
+    expect(result[:error]).to eq Messages::USER_NOT_EXIST_KEY
   end
 end
