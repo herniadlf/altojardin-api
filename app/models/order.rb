@@ -19,6 +19,11 @@ class Order
     @status = data[:status].nil? ? OrderStatus::RECEIVED : data[:status]
   end
 
+  def update_status(new_status)
+    @status = new_status
+    OrderRepository.new.save(self)
+  end
+
   def status_label
     status = OrderStatus::STATUS_MAP[@status]
     key = status[:key]

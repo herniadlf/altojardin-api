@@ -18,4 +18,22 @@ describe Order do
       expect(order.errors[:status].first).to eq 'invalid_status'
     end
   end
+
+  describe 'status observer' do
+    before(:each) do
+      client = Client.new(username: 'username', address: 'Paseo Colon 111', phone: '1234-1243')
+      ClientRepository.new.save(client)
+    end
+
+    let(:order) do
+      client = ClientRepository.new.first
+      described_class.new(user_id: client.user_id, menu: 'menu_individual')
+    end
+
+    it 'should observe in progress status' do
+      expect(order.status).to eq OrderStatus::RECEIVED
+      order.update_status(OrderStatus::IN_PROGRESS)
+      expect(order.status).to eq OrderStatus::IN_PROGRESS
+    end
+  end
 end
