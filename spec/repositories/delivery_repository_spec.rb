@@ -24,4 +24,17 @@ describe DeliveryRepository do
     repository.save(new_delivery)
     expect(repository.find(new_delivery.id).available).to eq false
   end
+
+  it 'should find available deliveries' do
+    expect(new_delivery.available).to eq true
+    delivery = repository.find_first_available
+    expect(delivery.nil?).to eq false
+  end
+
+  it 'should not find available deliveries' do
+    new_delivery.available = false
+    repository.save(new_delivery)
+    delivery = repository.find_first_available
+    expect(delivery.nil?).to eq true
+  end
 end
