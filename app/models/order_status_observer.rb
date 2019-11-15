@@ -17,7 +17,15 @@ module OrderStatusObserver
 
   class InTransit < OrderStatusObserver
     def update
-      @order.status = @status
+      delivery = DeliveryRepository.new.find_first_available
+      if delivery.nil?
+        @order.status = OrderStatus::WAITING
+      else
+        @order.status = @status
+        @order.assigned_to = delivery.id
+        delivery.available = false
+        DeliveryRepository.new.save(delivery)
+      end
       OrderRepository.new.save(@order)
     end
   end

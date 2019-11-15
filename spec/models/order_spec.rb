@@ -30,6 +30,11 @@ describe Order do
       client = ClientRepository.new.first
       described_class.new(user_id: client.user_id, menu: 'menu_individual')
     end
+    let(:delivery) do
+      delivery = Delivery.new(username: 'kitopizzass')
+      DeliveryRepository.new.save(delivery)
+      delivery
+    end
 
     it 'should observe in progress status' do
       expect(order.status).to eq OrderStatus::RECEIVED
@@ -37,7 +42,16 @@ describe Order do
       expect(order.status).to eq OrderStatus::IN_PROGRESS
     end
 
-    it 'should observe in transit status' do
+    it 'should have waiting status if no deliveries are available when status goes in transit' do
+      delivery.available = false
+      DeliveryRepository.new.save(delivery)
+      expect(order.status).to eq OrderStatus::RECEIVED
+      order.update_status('en_entrega')
+      expect(order.status).to eq OrderStatus::WAITING
+    end
+
+    it 'should have in transit status if a delivery is available when status goes in transit' do
+      expect(delivery.available).to eq true
       expect(order.status).to eq OrderStatus::RECEIVED
       order.update_status('en_entrega')
       expect(order.status).to eq OrderStatus::IN_TRANSIT
