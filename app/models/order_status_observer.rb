@@ -21,4 +21,11 @@ module OrderStatusObserver
       OrderRepository.new.save(@order)
     end
   end
+
+  class Delivered < OrderStatusObserver
+    def update
+      @order.status = @status
+      OrderRepository.new.save(@order)
+    end
+  end
 end

@@ -34,6 +34,7 @@ module OrderStatus
   }.freeze
   OBSERVER_MAP = {
     IN_PROGRESS => -> { OrderStatusObserver::InProgress.new },
-    IN_TRANSIT => -> { OrderStatusObserver::InTransit.new }
+    IN_TRANSIT => -> { OrderStatusObserver::InTransit.new },
+    DELIVERED => -> { OrderStatusObserver::Delivered.new }
   }.freeze
 end

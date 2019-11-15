@@ -41,5 +41,11 @@ describe Order do
       order.update_status('en_entrega')
       expect(order.status).to eq OrderStatus::IN_TRANSIT
     end
+
+    it 'should observe delivered status' do
+      expect(order.status).to eq OrderStatus::RECEIVED
+      order.update_status('entregado')
+      expect(order.status).to eq OrderStatus::DELIVERED
+    end
   end
 end
