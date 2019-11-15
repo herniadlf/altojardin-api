@@ -1,8 +1,8 @@
 require_relative '../../app/models/order'
 require_relative '../../app/repositories/order_repository'
 
-DeliveryApi::App.controllers :client do
-  post '/:username/order', provides: :json do
+DeliveryApi::App.controllers do
+  post 'client/:username/order', provides: :json do
     result = UserRepository.new.find_by_username(params['username'])
     user = result[:user]
     error = result[:error]
@@ -20,7 +20,7 @@ DeliveryApi::App.controllers :client do
     }.to_json
   end
 
-  get '/:username/order/:order_id', provides: :json do
+  get 'client/:username/order/:order_id', provides: :json do
     order_id = params[:order_id]
     username = params[:username]
     result = OrderRepository.new.find_for_username(order_id, username)
