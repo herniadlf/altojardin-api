@@ -4,14 +4,15 @@ class OrderRepository < BaseRepository
 
   def find_for_username(order_id, username)
     user = UserRepository.new.find_by_username username
-    return { 'error': 'user not exist' } if user.nil?
+    return { 'error': user[:error] } unless user[:error].nil?
 
+    user = user[:user]
     order = find(order_id)
     return { 'order': order } unless order.nil? || order.user_id != user.id
 
-    { 'error': 'order not exist' }
+    { 'error': Messages::ORDER_NOT_EXIST_KEY }
   rescue StandardError
-    { 'error': 'there are no orders' }
+    { 'error': Messages::NO_ORDERS_KEY }
   end
 
   protected

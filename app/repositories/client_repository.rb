@@ -6,11 +6,14 @@ class ClientRepository < BaseRepository
     UserRepository.new.save(a_record) && super(a_record)
   end
 
-  def find_by_telegram_id(telegram_id)
-    user = UserRepository.new.find_by_telegram_id(telegram_id)
-    return nil if user.nil?
+  def find_by_username(username)
+    result = UserRepository.new.find_by_username(username)
+    return result unless result[:error].nil?
 
-    find(user.id)
+    result = dataset.first(user_id: result[:user].id)
+    return { client: load_object(result) } unless result.nil?
+
+    { 'error': Messages::USER_NOT_EXIST_KEY }
   end
 
   protected
@@ -38,7 +41,6 @@ class ClientRepository < BaseRepository
   def load_object(a_record)
     client = super
     user = UserRepository.new.find(client.user_id)
-    client.telegram_id = user.telegram_id
     client.username = user.username
     client
   end

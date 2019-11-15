@@ -6,7 +6,6 @@ describe ClientRepository do
 
   let(:new_client) do
     new_client = Client.new(
-      telegram_id: '123',
       username: 'username',
       phone: '1233-1233',
       address: 'callefalsa 123'
@@ -15,18 +14,15 @@ describe ClientRepository do
     new_client
   end
 
-  it 'should find user with telegram id 123' do
-    client = repository.find_by_telegram_id(new_client.telegram_id)
-
-    expect(client.telegram_id).to eq '123'
-    expect(client.username).to eq 'username'
-    expect(client.phone).to eq '1233-1233'
+  it 'should find user with username' do
+    client = repository.find_by_username(new_client.username)
+    expect(client[:client].phone).to eq '1233-1233'
+    expect(client[:client].address).to eq 'callefalsa 123'
   end
 
-  it 'should not find user with telegram id 456' do
-    telegram_id = '456'
-    client = repository.find_by_telegram_id(telegram_id)
-
-    expect(client.nil?).to eq true
+  it 'should not find user with invalid username' do
+    username = 'nameuser'
+    client = repository.find_by_username(username)
+    expect(client[:client].nil?).to eq true
   end
 end
