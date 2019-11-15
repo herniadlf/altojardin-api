@@ -19,11 +19,12 @@ DeliveryApi::App.controllers :client do
   get '/:username/order/:order_id', provides: :json do
     order_id = params[:order_id]
     username = params[:username]
-    user = UserRepository.new.find_by_username username
-    order = OrderRepository.new.find_for_user(order_id, user.id)
-    return { 'order_status': order.status_label }.to_json unless order.nil?
+    result = OrderRepository.new.find_for_username(order_id, username)
+    order = result[:order]
+    error = result[:error]
+    return { 'order_status': order.status_label }.to_json if error.nil?
 
-    status 404
-    { 'error': 'pedido no encontrado' }.to_json
+    status 400
+    { 'error': error }.to_json
   end
 end
