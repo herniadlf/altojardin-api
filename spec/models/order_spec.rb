@@ -32,7 +32,7 @@ describe Order do
 
     it 'should observe in progress status' do
       expect(order.status).to eq OrderStatus::RECEIVED
-      order.update_status(OrderStatus::IN_PROGRESS)
+      order.update_status('en_preparacion')
       expect(order.status).to eq OrderStatus::IN_PROGRESS
     end
   end

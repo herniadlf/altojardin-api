@@ -24,7 +24,7 @@ class Order
   end
 
   def status_label
-    status = OrderStatus::STATUS_MAP[@status]
+    status = OrderStatus::FROM_STATUS_MAP[@status]
     key = status[:key]
     message = "Su pedido #{id} #{status[:label]}"
     { key: key, message: message }
@@ -36,5 +36,5 @@ class Order
     errors.add(:menu, Messages::INVALID_MENU) unless VALID_MENUS.include? @menu
   end
 
-  VALID_MENUS = %w[menu_individual menu_parejas menu_familiar].freeze
+  VALID_MENUS = %w[menu_individual menu_pareja menu_familiar].freeze
 end

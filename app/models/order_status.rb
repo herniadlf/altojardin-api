@@ -9,13 +9,22 @@ module OrderStatus
   CANCELLED = 5
 
   def self.observer(order, new_status)
-    data = { order: order, status: new_status }
-    observer = OBSERVER_MAP[new_status].call
+    status = TO_STATUS_MAP[new_status]
+    data = { order: order, status: status }
+    observer = OBSERVER_MAP[status].call
     observer.load_data data
     observer
   end
 
-  STATUS_MAP = {
+  TO_STATUS_MAP = {
+    'recibido' => RECEIVED,
+    'en_preparacion' => IN_PROGRESS,
+    'en_entrega' => IN_TRANSIT,
+    'en_espera' => WAITING,
+    'entregado' => DELIVERED,
+    'cancelado' => CANCELLED
+  }.freeze
+  FROM_STATUS_MAP = {
     RECEIVED => { key: 'recibido', label: 'ha sido RECIBIDO' },
     IN_PROGRESS => { key: 'en_preparacion', label: 'esta EN PREPARACION' },
     IN_TRANSIT => { key: 'en_entrega', label: 'esta EN ENTREGA' },

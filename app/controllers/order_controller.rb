@@ -39,4 +39,16 @@ DeliveryApi::App.controllers do
       'message': Messages.new.get_message(error)
     }.to_json
   end
+
+  put 'order/:order_id/status', provides: :json do
+    order_id = params[:order_id]
+    new_status = params[:status]
+    order = OrderRepository.new.find(order_id)
+    if order.nil?
+      status 400
+      error = Messages::ORDER_NOT_EXIST_KEY
+      return { error: error, message: Messages.new.get_message(error) }.to_json
+    end
+    order.update_status(new_status)
+  end
 end
