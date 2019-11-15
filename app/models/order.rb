@@ -31,6 +31,11 @@ class Order
     { key: key, message: message }
   end
 
+  def assigned_to_username
+    delivery = DeliveryRepository.new.find(@assigned_to)
+    delivery.username
+  end
+
   private
 
   def valid_menu

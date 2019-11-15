@@ -94,5 +94,6 @@ describe OrderRepository do
     repository.save(order)
     result = repository.find(order.id)
     expect(result.assigned_to).to eq delivery.id
+    expect(result.assigned_to_username).to eq 'kitopizzas'
   end
 end

@@ -29,6 +29,7 @@ DeliveryApi::App.controllers do
     if error.nil?
       return {
         'order_status': order.status_label[:key],
+        'assigned_to': order.assigned_to_username,
         'message': order.status_label[:message]
       }.to_json
     end
