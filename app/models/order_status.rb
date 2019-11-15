@@ -33,6 +33,7 @@ module OrderStatus
     CANCELLED => { key: 'cancelado', label: 'ha sido CANCELADO' }
   }.freeze
   OBSERVER_MAP = {
-    IN_PROGRESS => -> { OrderStatusObserver::InProgress.new }
+    IN_PROGRESS => -> { OrderStatusObserver::InProgress.new },
+    IN_TRANSIT => -> { OrderStatusObserver::InTransit.new }
   }.freeze
 end

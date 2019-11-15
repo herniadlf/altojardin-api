@@ -35,5 +35,11 @@ describe Order do
       order.update_status('en_preparacion')
       expect(order.status).to eq OrderStatus::IN_PROGRESS
     end
+
+    it 'should observe in transit status' do
+      expect(order.status).to eq OrderStatus::RECEIVED
+      order.update_status('en_entrega')
+      expect(order.status).to eq OrderStatus::IN_TRANSIT
+    end
   end
 end

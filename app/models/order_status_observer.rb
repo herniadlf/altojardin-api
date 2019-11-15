@@ -14,4 +14,11 @@ module OrderStatusObserver
       OrderRepository.new.save(@order)
     end
   end
+
+  class InTransit < OrderStatusObserver
+    def update
+      @order.status = @status
+      OrderRepository.new.save(@order)
+    end
+  end
 end
