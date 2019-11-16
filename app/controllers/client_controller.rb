@@ -4,6 +4,13 @@ require_relative '../../app/messages/messages'
 
 DeliveryApi::App.controllers :client do
   post '/', provides: :json do
+    username = params[:username]
+    user = UserRepository.new.find_by_username(username)[:user]
+    unless user.nil?
+      status 400
+      key = Messages::ALREADY_REGISTERED
+      return { 'error': key, 'message': Messages.new.get_message(key) }.to_json
+    end
     client = Client.new(params)
     return { 'client_id': client.id }.to_json if ClientRepository.new.save(client)
 
