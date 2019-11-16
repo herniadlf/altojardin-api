@@ -7,3 +7,5 @@ reports/
 /workspace.xml
 *iml
 features
+
+.byebug_history

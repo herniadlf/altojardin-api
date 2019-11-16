@@ -5,15 +5,21 @@ describe OrderRepository do
   let(:repository) { described_class.new }
 
   let(:order_owner) do
-    user = User.new(telegram_id: '123', username: 'username')
+    user = User.new(username: 'username')
     UserRepository.new.save(user)
     user
   end
 
   let(:another_owner) do
-    user = User.new(telegram_id: '456', username: 'johnlennon')
+    user = User.new(username: 'johnlennon')
     UserRepository.new.save(user)
     user
+  end
+
+  let(:delivery) do
+    delivery = Delivery.new(username: 'kitopizzas')
+    DeliveryRepository.new.save(delivery)
+    delivery
   end
 
   it 'should find created order' do
@@ -29,7 +35,7 @@ describe OrderRepository do
     order = Order.new(menu: 'menu_individual')
     repository.save(order)
     expect(order.valid?).to eq false
-    expect(order.errors.messages[order.errors.messages.keys.first][0]).to eq 'empty_user'
+    expect(order.errors.messages[order.errors.messages.keys.first][0]).to eq 'not_registered'
   end
 
   it 'creation should fail with invalid menu' do
@@ -71,7 +77,7 @@ describe OrderRepository do
     order = Order.new(user_id: order_owner.id, menu: 'menu_individual')
     repository.save(order)
     result = repository.find_for_username(order.id, 'notexistentusername')
-    expect(result[:error]).to eq 'user not exist'
+    expect(result[:error]).to eq 'not_registered'
     expect(result[:order]).to eq nil
   end
 
@@ -79,6 +85,15 @@ describe OrderRepository do
     order = Order.new(user_id: order_owner.id, menu: 'menu_individual')
     repository.save(order)
     result = repository.find_for_username(order.id, order_owner.username)
-    expect(result[:order].status_label).to eq 'recibido'
+    expect(result[:order].status_label[:key]).to eq 'recibido'
+    expect(result[:order].status_label[:message]).to eq "Su pedido #{order.id} ha sido RECIBIDO"
+  end
+
+  it 'should have a delivery assignment' do
+    order = Order.new(user_id: order_owner.id, menu: 'menu_individual', assigned_to: delivery.id)
+    order.update_status('en_entrega')
+    result = repository.find(order.id)
+    expect(result.assigned_to).to eq delivery.id
+    expect(result.assigned_to_username).to eq 'kitopizzas'
   end
 end
