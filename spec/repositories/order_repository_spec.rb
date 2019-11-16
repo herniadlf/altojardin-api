@@ -35,7 +35,7 @@ describe OrderRepository do
     order = Order.new(menu: 'menu_individual')
     repository.save(order)
     expect(order.valid?).to eq false
-    expect(order.errors.messages[order.errors.messages.keys.first][0]).to eq 'user not exist'
+    expect(order.errors.messages[order.errors.messages.keys.first][0]).to eq 'not_registered'
   end
 
   it 'creation should fail with invalid menu' do
@@ -77,7 +77,7 @@ describe OrderRepository do
     order = Order.new(user_id: order_owner.id, menu: 'menu_individual')
     repository.save(order)
     result = repository.find_for_username(order.id, 'notexistentusername')
-    expect(result[:error]).to eq 'user not exist'
+    expect(result[:error]).to eq 'not_registered'
     expect(result[:order]).to eq nil
   end
 
