@@ -57,6 +57,13 @@ describe Order do
       expect(order.status).to eq OrderStatus::IN_TRANSIT
     end
 
+    it 'should be assigned to delivery' do
+      expect(delivery.available).to eq true
+      order.update_status('en_entrega')
+      expect(order.status).to eq OrderStatus::IN_TRANSIT
+      expect(order.assigned_to).to eq delivery.id
+    end
+
     it 'should observe delivered status' do
       expect(order.status).to eq OrderStatus::RECEIVED
       order.update_status('entregado')

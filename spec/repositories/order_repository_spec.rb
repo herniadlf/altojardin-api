@@ -91,7 +91,7 @@ describe OrderRepository do
 
   it 'should have a delivery assignment' do
     order = Order.new(user_id: order_owner.id, menu: 'menu_individual', assigned_to: delivery.id)
-    repository.save(order)
+    order.update_status('en_entrega')
     result = repository.find(order.id)
     expect(result.assigned_to).to eq delivery.id
     expect(result.assigned_to_username).to eq 'kitopizzas'

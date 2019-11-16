@@ -39,6 +39,7 @@ class DeliveryRepository < BaseRepository
   def load_object(a_record)
     delivery = super
     user = UserRepository.new.find(delivery.user_id)
+    delivery.id = user.id
     delivery.username = user.username
     delivery
   end

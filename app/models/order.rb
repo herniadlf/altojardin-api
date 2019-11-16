@@ -32,6 +32,8 @@ class Order
   end
 
   def assigned_to_username
+    return nil if @assigned_to.nil?
+
     delivery = DeliveryRepository.new.find(@assigned_to)
     delivery.username
   end
