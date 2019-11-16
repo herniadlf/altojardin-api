@@ -3,7 +3,7 @@ require_relative 'order_status'
 class Order
   include ActiveModel::Validations
 
-  attr_accessor :id, :user_id, :menu, :created_on, :updated_on, :status
+  attr_accessor :id, :user_id, :menu, :created_on, :updated_on, :status, :assigned_to
 
   validate :valid_menu
   validates :user_id, presence: { message: Messages::USER_NOT_EXIST_KEY }
@@ -17,13 +17,25 @@ class Order
     @created_on = data[:created_on]
     @updated_on = data[:updated_on]
     @status = data[:status].nil? ? OrderStatus::RECEIVED : data[:status]
+    @assigned_to = data[:assigned_to]
+  end
+
+  def update_status(new_status)
+    OrderStatus.observer(self, new_status).update
   end
 
   def status_label
-    status = OrderStatus::STATUS_MAP[@status]
+    status = OrderStatus::FROM_STATUS_MAP[@status]
     key = status[:key]
     message = "Su pedido #{id} #{status[:label]}"
     { key: key, message: message }
+  end
+
+  def assigned_to_username
+    return nil if @assigned_to.nil?
+
+    delivery = DeliveryRepository.new.find(@assigned_to)
+    delivery.username
   end
 
   private
@@ -32,5 +44,5 @@ class Order
     errors.add(:menu, Messages::INVALID_MENU) unless VALID_MENUS.include? @menu
   end
 
-  VALID_MENUS = %w[menu_individual menu_parejas menu_familiar].freeze
+  VALID_MENUS = %w[menu_individual menu_pareja menu_familiar].freeze
 end

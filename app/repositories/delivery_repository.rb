@@ -6,11 +6,17 @@ class DeliveryRepository < BaseRepository
     UserRepository.new.save(a_record) && super(a_record)
   end
 
+  def find_first_available
+    deliveries = load_collection dataset.where(available: true)
+    deliveries.first
+  end
+
   protected
 
   def changeset(user)
     {
-      user_id: user.id
+      user_id: user.id,
+      available: user.available
     }
   end
 
@@ -33,6 +39,7 @@ class DeliveryRepository < BaseRepository
   def load_object(a_record)
     delivery = super
     user = UserRepository.new.find(delivery.user_id)
+    delivery.id = user.id
     delivery.username = user.username
     delivery
   end

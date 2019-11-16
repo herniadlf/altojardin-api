@@ -8,11 +8,18 @@ class OrderRepository < BaseRepository
 
     user = user[:user]
     order = find(order_id)
-    return { 'order': order } unless order.nil? || order.user_id != user.id
+    return { 'error': Messages::NO_ORDERS_KEY } if order.nil?
 
-    { 'error': Messages::ORDER_NOT_EXIST_KEY }
-  rescue StandardError
-    { 'error': Messages::NO_ORDERS_KEY }
+    return { 'error': Messages::ORDER_NOT_EXIST_KEY } if order.user_id != user.id
+
+    { 'order': order }
+  end
+
+  def find(id)
+    order = dataset.first(pk_column => id)
+    return load_object order unless order.nil?
+
+    order
   end
 
   protected
@@ -21,7 +28,8 @@ class OrderRepository < BaseRepository
     {
       user_id: order.user_id,
       menu: order.menu,
-      status: order.status
+      status: order.status,
+      assigned_to: order.assigned_to
     }
   end
 end

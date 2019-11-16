@@ -41,6 +41,7 @@ class ClientRepository < BaseRepository
   def load_object(a_record)
     client = super
     user = UserRepository.new.find(client.user_id)
+    client.id = user.id
     client.username = user.username
     client
   end

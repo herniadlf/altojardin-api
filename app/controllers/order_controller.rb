@@ -1,8 +1,8 @@
 require_relative '../../app/models/order'
 require_relative '../../app/repositories/order_repository'
 
-DeliveryApi::App.controllers :client do
-  post '/:username/order', provides: :json do
+DeliveryApi::App.controllers do
+  post 'client/:username/order', provides: :json do
     result = UserRepository.new.find_by_username(params['username'])
     user = result[:user]
     error = result[:error]
@@ -20,7 +20,7 @@ DeliveryApi::App.controllers :client do
     }.to_json
   end
 
-  get '/:username/order/:order_id', provides: :json do
+  get 'client/:username/order/:order_id', provides: :json do
     order_id = params[:order_id]
     username = params[:username]
     result = OrderRepository.new.find_for_username(order_id, username)
@@ -29,6 +29,7 @@ DeliveryApi::App.controllers :client do
     if error.nil?
       return {
         'order_status': order.status_label[:key],
+        'assigned_to': order.assigned_to_username,
         'message': order.status_label[:message]
       }.to_json
     end
@@ -38,5 +39,17 @@ DeliveryApi::App.controllers :client do
       'error': error,
       'message': Messages.new.get_message(error)
     }.to_json
+  end
+
+  put 'order/:order_id/status', provides: :json do
+    order_id = params[:order_id]
+    new_status = params[:status]
+    order = OrderRepository.new.find(order_id)
+    if order.nil?
+      status 400
+      error = Messages::ORDER_NOT_EXIST_KEY
+      return { error: error, message: Messages.new.get_message(error) }.to_json
+    end
+    order.update_status(new_status)
   end
 end
