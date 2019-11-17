@@ -50,7 +50,7 @@ class DeliveryRepository < BaseRepository
   end
 
   def deliveries_with_capacity(needed_capacity)
-    DB["
+    DB[" with delivieries_with_capacity as(
       select deliveries.user_id,
              sum(case when orders.status = 2 then weight else 0 end) as occupied_quantity
       from deliveries
@@ -58,8 +58,10 @@ class DeliveryRepository < BaseRepository
               left join menu_types on orders.menu = menu_types.menu
           where deliveries.available is True
       group by deliveries.user_id
-      having (#{Delivery::CAPACITY} - count(distinct orders)) >= #{needed_capacity}
-      order by occupied_quantity desc"
+      order by occupied_quantity desc, user_id desc)
+      select user_id, occupied_quantity from delivieries_with_capacity
+      where(#{Delivery::CAPACITY} - occupied_quantity) >= #{needed_capacity}
+      order by occupied_quantity desc, user_id asc"
     ]
   end
 
@@ -70,10 +72,10 @@ class DeliveryRepository < BaseRepository
       return find(possible_deliveries[0][:user_id])
     end
 
-    find_delivery_with_fewest_shippings(possible_deliveries)
+    find_delivery_with_fewest_shippings_in_the_day(possible_deliveries)
   end
 
-  def find_delivery_with_fewest_shippings(deliveries)
+  def find_delivery_with_fewest_shippings_in_the_day(deliveries)
     user_id = DB["
       select deliveries.user_id, count(distinct orders) as quantity
       from deliveries left join orders on orders.assigned_to = deliveries.user_id

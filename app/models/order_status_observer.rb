@@ -23,7 +23,6 @@ module OrderStatusObserver
       else
         @order.status = @status
         @order.assigned_to = delivery.id
-        delivery.available = false
         DeliveryRepository.new.save(delivery)
       end
       OrderRepository.new.save(@order)
