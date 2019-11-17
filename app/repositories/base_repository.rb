@@ -68,7 +68,11 @@ class BaseRepository
   end
 
   def insert_changeset(a_record)
-    changeset_with_timestamps(a_record).merge(created_on: Date.today)
+    if a_record.created_on.nil?
+      return changeset_with_timestamps(a_record).merge(created_on: Date.today)
+    end
+
+    changeset_with_timestamps(a_record)
   end
 
   def update_changeset(a_record)

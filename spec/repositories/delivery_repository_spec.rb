@@ -159,14 +159,22 @@ describe DeliveryRepository do
       another_order.status = OrderStatus::IN_TRANSIT
       OrderRepository.new.save(another_order)
 
-      delivered_order = Order.new(
-        user_id: client.id,
-        menu: 'menu_individual',
-        status: OrderStatus::DELIVERED,
-        assigned_to: pepebicicleta_delivery.id
-      )
-
+      delivered_order = Order.new(user_id: client.id, menu: 'menu_individual',
+                                  status: OrderStatus::DELIVERED,
+                                  assigned_to: pepebicicleta_delivery.id)
       OrderRepository.new.save(delivered_order)
+
+      old_delivered_order = Order.new(user_id: client.id, menu: 'menu_individual',
+                                      status: OrderStatus::DELIVERED, created_on: '1999-12-15',
+                                      assigned_to: juanmotoneta_delivery.id)
+      OrderRepository.new.save(old_delivered_order)
+
+      another_old_delivered_order = Order.new(
+        user_id: client.id, menu: 'menu_individual',
+        status: OrderStatus::DELIVERED, created_on: '1999-12-15',
+        updated_at: '15-12-99', assigned_to: juanmotoneta_delivery.id
+      )
+      OrderRepository.new.save(another_old_delivered_order)
     end
 
     it 'should select the one with least orders done in the day' do

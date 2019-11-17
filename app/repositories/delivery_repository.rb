@@ -80,6 +80,7 @@ class DeliveryRepository < BaseRepository
       select deliveries.user_id, count(distinct orders) as quantity
       from deliveries left join orders on orders.assigned_to = deliveries.user_id
       where deliveries.user_id in ?
+      and orders.created_on = now()::date or orders.created_on is null
       group by deliveries.user_id
       order by quantity asc
       limit 1", deliveries.map { |user| user[:user_id] }
