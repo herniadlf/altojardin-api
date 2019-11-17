@@ -12,7 +12,7 @@ describe DeliveryRepository do
     )
     pepebicicleta_delivery.available = false
     repository.save(pepebicicleta_delivery)
-    pepebicicleta_delivery
+    repository.find(pepebicicleta_delivery.id)
   end
 
   let(:juanmotoneta_delivery) do
@@ -21,7 +21,17 @@ describe DeliveryRepository do
     )
     juanmotoneta_delivery.available = false
     repository.save(juanmotoneta_delivery)
-    juanmotoneta_delivery
+    repository.find(juanmotoneta_delivery.id)
+  end
+
+  let(:order) do
+    order = Order.new(
+      menu: 'menu_individual',
+      status: OrderStatus::IN_TRANSIT,
+      assigned_to: pepebicicleta_delivery.user_id
+    )
+    OrderRepository.new.save(order)
+    order
   end
 
   it 'should find delivery' do
@@ -41,26 +51,17 @@ describe DeliveryRepository do
     it 'should find available deliveries' do
       pepebicicleta_delivery.available = true
       repository.save(pepebicicleta_delivery)
-      pepebicicleta_delivery = repository.find_first_available_for_menu('menu_individual')
+      pepebicicleta_delivery = repository.find_first_available_for_order(order)
       expect(pepebicicleta_delivery.nil?).to eq false
     end
 
     it 'should not find available deliveries' do
-      pepebicicleta_delivery = repository.find_first_available_for_menu('menu_individual')
+      pepebicicleta_delivery = repository.find_first_available_for_order(order)
       expect(pepebicicleta_delivery.nil?).to eq true
     end
   end
 
   context 'when deliveries have orders' do
-    let(:order) do
-      order = Order.new(
-        menu: 'menu_individual',
-        status: OrderStatus::IN_TRANSIT,
-        assigned_to: pepebicicleta_delivery.user_id
-      )
-      OrderRepository.new.save(order)
-    end
-
     before(:each) do
       pepebicicleta_delivery.available = true
       juanmotoneta_delivery.available = true
@@ -69,8 +70,8 @@ describe DeliveryRepository do
     end
 
     it 'should find delivery with optimum space' do
-      delivery = repository.find_first_available_for_menu('menu_individual')
-      expect(delivery.id).to eq pepebicicleta_delivery.id
+      delivery = repository.find_first_available_for_order(order)
+      expect(delivery.username).to eq 'pepebicicleta'
     end
   end
 end

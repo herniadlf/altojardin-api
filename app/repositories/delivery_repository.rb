@@ -6,7 +6,7 @@ class DeliveryRepository < BaseRepository
     UserRepository.new.save(a_record) && super(a_record)
   end
 
-  def find_first_available_for_menu(_menu)
+  def find_first_available_for_order(_order)
     deliveries_order_quantity.each do |delivery|
       return find(delivery[:user_id])
     end
