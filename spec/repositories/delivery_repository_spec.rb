@@ -2,6 +2,8 @@ require 'integration_spec_helper'
 require_relative '../../app/models/delivery'
 require_relative '../../app/models/order'
 require_relative '../../app/repositories/order_repository'
+require_relative '../../app/repositories/client_repository'
+require_relative '../../app/models/client'
 
 describe DeliveryRepository do
   let(:repository) { described_class.new }
@@ -12,7 +14,7 @@ describe DeliveryRepository do
     )
     pepebicicleta_delivery.available = false
     repository.save(pepebicicleta_delivery)
-    repository.find(pepebicicleta_delivery.id)
+    pepebicicleta_delivery
   end
 
   let(:juanmotoneta_delivery) do
@@ -21,14 +23,25 @@ describe DeliveryRepository do
     )
     juanmotoneta_delivery.available = false
     repository.save(juanmotoneta_delivery)
-    repository.find(juanmotoneta_delivery.id)
+    juanmotoneta_delivery
+  end
+
+  let(:client) do
+    client = Client.new(
+      username: 'username',
+      phone: '1233-1233',
+      address: 'callefalsa 123'
+    )
+    ClientRepository.new.save(client)
+    client
   end
 
   let(:order) do
     order = Order.new(
+      user_id: client.id,
       menu: 'menu_individual',
       status: OrderStatus::IN_TRANSIT,
-      assigned_to: pepebicicleta_delivery.user_id
+      assigned_to: pepebicicleta_delivery.id
     )
     OrderRepository.new.save(order)
     order
