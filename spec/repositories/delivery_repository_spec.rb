@@ -41,12 +41,12 @@ describe DeliveryRepository do
     it 'should find available deliveries' do
       pepebicicleta_delivery.available = true
       repository.save(pepebicicleta_delivery)
-      pepebicicleta_delivery = repository.find_first_available
+      pepebicicleta_delivery = repository.find_first_available_for_menu('menu_individual')
       expect(pepebicicleta_delivery.nil?).to eq false
     end
 
     it 'should not find available deliveries' do
-      pepebicicleta_delivery = repository.find_first_available
+      pepebicicleta_delivery = repository.find_first_available_for_menu('menu_individual')
       expect(pepebicicleta_delivery.nil?).to eq true
     end
   end
@@ -54,8 +54,8 @@ describe DeliveryRepository do
   context 'when deliveries have orders' do
     let(:order) do
       order = Order.new(
-        menu: 'menu_familiar',
-        status: OrderStatus::DELIVERED,
+        menu: 'menu_individual',
+        status: OrderStatus::IN_TRANSIT,
         assigned_to: pepebicicleta_delivery.user_id
       )
       OrderRepository.new.save(order)
@@ -69,8 +69,8 @@ describe DeliveryRepository do
     end
 
     it 'should find delivery with fewer deliveries' do
-      delivery = repository.find_first_available
-      expect(delivery.id).to eq juanmotoneta_delivery.id
+      delivery = repository.find_first_available_for_menu('menu_individual')
+      expect(delivery.id).to eq pepebicicleta_delivery.id
     end
   end
 end

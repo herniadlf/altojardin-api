@@ -6,8 +6,8 @@ class DeliveryRepository < BaseRepository
     UserRepository.new.save(a_record) && super(a_record)
   end
 
-  def find_first_available
-    deliveries_today_order_quantity.each do |delivery|
+  def find_first_available_for_menu(_menu)
+    deliveries_order_quantity.each do |delivery|
       return find(delivery[:user_id])
     end
     nil
@@ -46,17 +46,15 @@ class DeliveryRepository < BaseRepository
     delivery
   end
 
-  def deliveries_today_order_quantity
+  def deliveries_order_quantity
     DB['
-      select deliveries.user_id, count(distinct orders.assigned_to) as quantity
+      select deliveries.user_id, sum(case when orders.status = 2 then weight else 0 end) as quantity
       from deliveries
-               left join orders
-                         on orders.assigned_to = deliveries.user_id
-      where orders.updated_on = now()::date
-         or orders.updated_on is null
-      and deliveries.available is True
+              left join orders on orders.assigned_to = deliveries.user_id
+              left join order_type on orders.menu = order_type.menu
+          where deliveries.available is True
       group by deliveries.user_id
-      order by deliveries desc;'
+      order by quantity desc;'
     ]
   end
 end
