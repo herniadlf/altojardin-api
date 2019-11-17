@@ -68,7 +68,7 @@ describe DeliveryRepository do
       repository.save(juanmotoneta_delivery)
     end
 
-    it 'should find delivery with fewer deliveries' do
+    it 'should find delivery with optimum space' do
       delivery = repository.find_first_available_for_menu('menu_individual')
       expect(delivery.id).to eq pepebicicleta_delivery.id
     end

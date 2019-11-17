@@ -54,7 +54,7 @@ class DeliveryRepository < BaseRepository
               left join order_type on orders.menu = order_type.menu
           where deliveries.available is True
       group by deliveries.user_id
-      order by quantity desc;'
+      order by quantity asc;'
     ]
   end
 end
