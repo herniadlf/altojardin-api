@@ -123,4 +123,55 @@ describe DeliveryRepository do
       expect(delivery.username).to eq 'juanmotoneta'
     end
   end
+
+  context 'when two deliveries have one individual order to be shipped' do
+    let(:another_order) do
+      order = Order.new(
+        user_id: client.id,
+        menu: 'menu_individual',
+        status: OrderStatus::RECEIVED
+      )
+      OrderRepository.new.save(order)
+      order
+    end
+
+    let(:new_individual_order) do
+      new_individual_order = Order.new(
+        user_id: client.id,
+        menu: 'menu_individual',
+        status: OrderStatus::RECEIVED
+      )
+      OrderRepository.new.save(new_individual_order)
+      new_individual_order
+    end
+
+    before(:each) do
+      pepebicicleta_delivery.available = true
+      juanmotoneta_delivery.available = true
+      repository.save(pepebicicleta_delivery)
+      repository.save(juanmotoneta_delivery)
+
+      order.assigned_to = pepebicicleta_delivery.id
+      order.status = OrderStatus::IN_TRANSIT
+      OrderRepository.new.save(order)
+
+      another_order.assigned_to = juanmotoneta_delivery.id
+      another_order.status = OrderStatus::IN_TRANSIT
+      OrderRepository.new.save(another_order)
+
+      delivered_order = Order.new(
+        user_id: client.id,
+        menu: 'menu_individual',
+        status: OrderStatus::DELIVERED,
+        assigned_to: pepebicicleta_delivery.id
+      )
+
+      OrderRepository.new.save(delivered_order)
+    end
+
+    it 'should select the one with least orders done in the day' do
+      delivery = repository.find_first_available_for_order(new_individual_order)
+      expect(delivery.username).to eq 'juanmotoneta'
+    end
+  end
 end

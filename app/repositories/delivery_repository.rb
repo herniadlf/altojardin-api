@@ -9,12 +9,11 @@ class DeliveryRepository < BaseRepository
   end
 
   def find_first_available_for_order(order)
-    deliveries_order_quantity.each do |delivery|
-      if Delivery::CAPACITY - delivery[:occupied_quantity] >= order.weight
-        return find(delivery[:user_id])
-      end
-    end
-    nil
+    possible_deliveries = deliveries_with_capacity(order.weight)
+
+    return nil if possible_deliveries.empty?
+
+    select_delivery(possible_deliveries.all)
   end
 
   protected
@@ -50,8 +49,8 @@ class DeliveryRepository < BaseRepository
     delivery
   end
 
-  def deliveries_order_quantity
-    DB['
+  def deliveries_with_capacity(needed_capacity)
+    DB["
       select deliveries.user_id,
              sum(case when orders.status = 2 then weight else 0 end) as occupied_quantity
       from deliveries
@@ -59,7 +58,31 @@ class DeliveryRepository < BaseRepository
               left join menu_types on orders.menu = menu_types.menu
           where deliveries.available is True
       group by deliveries.user_id
-      order by occupied_quantity desc;'
+      having (#{Delivery::CAPACITY} - count(distinct orders)) >= #{needed_capacity}
+      order by occupied_quantity desc"
     ]
+  end
+
+  def select_delivery(possible_deliveries)
+    return find(possible_deliveries[0][:user_id]) if possible_deliveries.count == 1
+
+    if possible_deliveries[0][:occupied_quantity] != possible_deliveries[1][:occupied_quantity]
+      return find(possible_deliveries[0][:user_id])
+    end
+
+    find_delivery_with_fewest_shippings(possible_deliveries)
+  end
+
+  def find_delivery_with_fewest_shippings(deliveries)
+    user_id = DB["
+      select deliveries.user_id, count(distinct orders) as quantity
+      from deliveries left join orders on orders.assigned_to = deliveries.user_id
+      where deliveries.user_id in ?
+      group by deliveries.user_id
+      order by quantity asc
+      limit 1", deliveries.map { |user| user[:user_id] }
+    ].map(:user_id)[0]
+
+    find(user_id)
   end
 end
