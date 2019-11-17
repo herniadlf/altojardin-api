@@ -7,8 +7,10 @@ class DeliveryRepository < BaseRepository
   end
 
   def find_first_available
-    deliveries = load_collection dataset.where(available: true)
-    deliveries.first
+    deliveries_today_order_quantity.each do |delivery|
+      return find(delivery[:user_id])
+    end
+    nil
   end
 
   protected
@@ -42,5 +44,19 @@ class DeliveryRepository < BaseRepository
     delivery.id = user.id
     delivery.username = user.username
     delivery
+  end
+
+  def deliveries_today_order_quantity
+    DB['
+      select deliveries.user_id, count(distinct orders.assigned_to) as quantity
+      from deliveries
+               left join orders
+                         on orders.assigned_to = deliveries.user_id
+      where orders.updated_on = now()::date
+         or orders.updated_on is null
+      and deliveries.available is True
+      group by deliveries.user_id
+      order by deliveries asc;'
+    ]
   end
 end

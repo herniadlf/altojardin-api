@@ -1,5 +1,7 @@
 require 'integration_spec_helper'
 require_relative '../../app/models/delivery'
+require_relative '../../app/models/order'
+require_relative '../../app/repositories/order_repository'
 
 describe DeliveryRepository do
   let(:repository) { described_class.new }
