@@ -40,8 +40,7 @@ describe DeliveryRepository do
     order = Order.new(
       user_id: client.id,
       menu: 'menu_individual',
-      status: OrderStatus::IN_TRANSIT,
-      assigned_to: pepebicicleta_delivery.id
+      status: OrderStatus::RECEIVED
     )
     OrderRepository.new.save(order)
     order
@@ -74,17 +73,54 @@ describe DeliveryRepository do
     end
   end
 
-  context 'when deliveries have orders' do
+  context 'when one delivery have one order in transit and one order delivered' do
     before(:each) do
       pepebicicleta_delivery.available = true
       juanmotoneta_delivery.available = true
       repository.save(pepebicicleta_delivery)
       repository.save(juanmotoneta_delivery)
+
+      order.assigned_to = pepebicicleta_delivery.id
+      order.status = OrderStatus::IN_TRANSIT
+      OrderRepository.new.save(order)
+
+      delivered_order = Order.new(
+        user_id: client.id,
+        menu: 'menu_individual',
+        status: OrderStatus::DELIVERED,
+        assigned_to: pepebicicleta_delivery.id
+      )
+      OrderRepository.new.save(delivered_order)
     end
 
-    it 'should find delivery with optimum space' do
-      delivery = repository.find_first_available_for_order(order)
+    let(:new_individual_order) do
+      new_individual_order = Order.new(
+        user_id: client.id,
+        menu: 'menu_individual',
+        status: OrderStatus::RECEIVED
+      )
+      OrderRepository.new.save(new_individual_order)
+      new_individual_order
+    end
+
+    let(:new_family_order) do
+      new_family_order = Order.new(
+        user_id: client.id,
+        menu: 'menu_familiar',
+        status: OrderStatus::RECEIVED
+      )
+      OrderRepository.new.save(new_family_order)
+      new_family_order
+    end
+
+    it 'should find delivery with minimum space available for a individual order' do
+      delivery = repository.find_first_available_for_order(new_individual_order)
       expect(delivery.username).to eq 'pepebicicleta'
+    end
+
+    it 'should find delivery with minimum space available for a familiar order' do
+      delivery = repository.find_first_available_for_order(new_family_order)
+      expect(delivery.username).to eq 'juanmotoneta'
     end
   end
 end

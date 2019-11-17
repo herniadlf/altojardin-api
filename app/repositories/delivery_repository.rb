@@ -1,3 +1,5 @@
+require_relative '../models/delivery'
+
 class DeliveryRepository < BaseRepository
   self.table_name = :deliveries
   self.model_class = 'Delivery'
@@ -6,9 +8,11 @@ class DeliveryRepository < BaseRepository
     UserRepository.new.save(a_record) && super(a_record)
   end
 
-  def find_first_available_for_order(_order)
+  def find_first_available_for_order(order)
     deliveries_order_quantity.each do |delivery|
-      return find(delivery[:user_id])
+      if Delivery::CAPACITY - delivery[:occupied_quantity] >= order.weight
+        return find(delivery[:user_id])
+      end
     end
     nil
   end
@@ -48,13 +52,14 @@ class DeliveryRepository < BaseRepository
 
   def deliveries_order_quantity
     DB['
-      select deliveries.user_id, sum(case when orders.status = 2 then weight else 0 end) as quantity
+      select deliveries.user_id,
+             sum(case when orders.status = 2 then weight else 0 end) as occupied_quantity
       from deliveries
               left join orders on orders.assigned_to = deliveries.user_id
               left join menu_types on orders.menu = menu_types.menu
           where deliveries.available is True
       group by deliveries.user_id
-      order by quantity desc;'
+      order by occupied_quantity desc;'
     ]
   end
 end
