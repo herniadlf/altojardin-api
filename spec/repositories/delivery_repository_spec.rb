@@ -50,4 +50,27 @@ describe DeliveryRepository do
       expect(pepebicicleta_delivery.nil?).to eq true
     end
   end
+
+  context 'when deliveries have orders' do
+    let(:order) do
+      order = Order.new(
+        menu: 'menu_familiar',
+        status: OrderStatus::DELIVERED,
+        assigned_to: pepebicicleta_delivery.user_id
+      )
+      OrderRepository.new.save(order)
+    end
+
+    before(:each) do
+      pepebicicleta_delivery.available = true
+      juanmotoneta_delivery.available = true
+      repository.save(pepebicicleta_delivery)
+      repository.save(juanmotoneta_delivery)
+    end
+
+    it 'should find delivery with fewer deliveries' do
+      delivery = repository.find_first_available
+      expect(delivery.id).to eq juanmotoneta_delivery.id
+    end
+  end
 end

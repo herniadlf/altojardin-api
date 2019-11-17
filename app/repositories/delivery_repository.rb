@@ -56,7 +56,7 @@ class DeliveryRepository < BaseRepository
          or orders.updated_on is null
       and deliveries.available is True
       group by deliveries.user_id
-      order by deliveries asc;'
+      order by deliveries desc;'
     ]
   end
 end
