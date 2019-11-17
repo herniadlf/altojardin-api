@@ -18,6 +18,11 @@ class Order
     @updated_on = data[:updated_on]
     @status = data[:status].nil? ? OrderStatus::RECEIVED : data[:status]
     @assigned_to = data[:assigned_to]
+    @weight = data[:weight]
+  end
+
+  def weight
+    @weight || (@weight = DB[:menu_types].first(menu: @menu)[:weight])
   end
 
   def update_status(new_status)
