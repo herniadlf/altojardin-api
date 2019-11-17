@@ -51,7 +51,7 @@ class DeliveryRepository < BaseRepository
       select deliveries.user_id, sum(case when orders.status = 2 then weight else 0 end) as quantity
       from deliveries
               left join orders on orders.assigned_to = deliveries.user_id
-              left join order_type on orders.menu = order_type.menu
+              left join menu_types on orders.menu = menu_types.menu
           where deliveries.available is True
       group by deliveries.user_id
       order by quantity asc;'

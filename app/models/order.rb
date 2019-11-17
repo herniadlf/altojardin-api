@@ -18,6 +18,7 @@ class Order
     @updated_on = data[:updated_on]
     @status = data[:status].nil? ? OrderStatus::RECEIVED : data[:status]
     @assigned_to = data[:assigned_to]
+    @weight = data[:weight]
   end
 
   def update_status(new_status)

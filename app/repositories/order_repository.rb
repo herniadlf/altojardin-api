@@ -24,6 +24,13 @@ class OrderRepository < BaseRepository
 
   protected
 
+  def load_object(a_record)
+    order = super
+    puts(order.menu)
+    order.weight = DB[:menu_types].first(menu: order.menu)[:weight]
+    order
+  end
+
   def changeset(order)
     {
       user_id: order.user_id,

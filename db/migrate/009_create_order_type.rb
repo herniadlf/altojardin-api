@@ -1,16 +1,16 @@
 Sequel.migration do
   up do
-    create_table(:order_type) do
+    create_table(:menu_types) do
       primary_key :menu, type: String
       Int :weight
     end
 
-    DB[:order_type].insert(['menu_individual', 1])
-    DB[:order_type].insert(['menu_pareja', 2])
-    DB[:order_type].insert(['menu_familiar', 4])
+    DB[:menu_types].insert(['menu_individual', 1])
+    DB[:menu_types].insert(['menu_pareja', 2])
+    DB[:menu_types].insert(['menu_familiar', 4])
   end
 
   down do
-    drop_table(:order_type)
+    drop_table(:menu_types)
   end
 end
