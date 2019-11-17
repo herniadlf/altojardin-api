@@ -3,7 +3,7 @@ require_relative 'order_status'
 class Order
   include ActiveModel::Validations
 
-  attr_accessor :id, :user_id, :menu, :created_on, :updated_on, :status, :assigned_to, :weight
+  attr_accessor :id, :user_id, :menu, :created_on, :updated_on, :status, :assigned_to
 
   validate :valid_menu
   validates :user_id, presence: { message: Messages::USER_NOT_EXIST_KEY }
