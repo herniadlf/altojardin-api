@@ -7,6 +7,7 @@ describe Order do
     it { is_expected.to respond_to(:menu) }
     it { is_expected.to respond_to(:status) }
     it { is_expected.to respond_to(:assigned_to) }
+    it { is_expected.to respond_to(:weight) }
 
     it 'initial status should be received' do
       order = described_class.new({})

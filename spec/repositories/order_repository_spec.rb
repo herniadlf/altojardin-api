@@ -27,8 +27,8 @@ describe OrderRepository do
     repository.save(order)
     order = repository.first
 
-    expect(order.nil?).to eq false
     expect(order.menu).to eq 'menu_individual'
+    expect(order.weight).to eq 1
   end
 
   it 'creation should fail if user is empty' do
