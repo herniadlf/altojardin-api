@@ -50,7 +50,7 @@ class DeliveryRepository < BaseRepository
   end
 
   def deliveries_with_capacity(needed_capacity)
-    DB[" with delivieries_with_capacity as(
+    DB[" with deliveries_with_occupancy as(
       select deliveries.user_id,
              sum(case when orders.status = 2 then weight else 0 end) as occupied_quantity
       from deliveries
@@ -59,7 +59,7 @@ class DeliveryRepository < BaseRepository
           where deliveries.available is True
       group by deliveries.user_id
       order by occupied_quantity desc, user_id desc)
-      select user_id, occupied_quantity from delivieries_with_capacity
+      select user_id, occupied_quantity from deliveries_with_occupancy
       where(#{Delivery::CAPACITY} - occupied_quantity) >= #{needed_capacity}
       order by occupied_quantity desc, user_id asc"
     ]
