@@ -1,4 +1,5 @@
 require_relative '../../app/messages/messages'
+require 'active_model'
 
 class User
   include ActiveModel::Validations
