@@ -35,4 +35,10 @@ DeliveryApi::App.controllers :client do
       'message': Messages.new.get_message(error)
     }.to_json
   end
+
+  post '/:username/order/:order_id/rate', provides: :json do
+    {
+      'rating': 5
+    }.to_json
+  end
 end
