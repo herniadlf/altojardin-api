@@ -2,41 +2,37 @@ require_relative '../../app/models/client'
 require_relative '../../app/repositories/client_repository'
 require_relative '../../app/messages/messages'
 
+def error_response(key, status_code)
+  status status_code
+  {
+    'error': key,
+    'message': Messages.new.get_message(key)
+  }.to_json
+end
+
 DeliveryApi::App.controllers :client do
   post '/', provides: :json do
-    username = params[:username]
-    user = UserRepository.new.find_by_username(username)[:user]
-    unless user.nil?
-      status 400
-      key = Messages::ALREADY_REGISTERED
-      return { 'error': key, 'message': Messages.new.get_message(key) }.to_json
-    end
+    user = UserRepository.new.find_by_username(params[:username])[:user]
+    return error_response(Messages::ALREADY_REGISTERED, 400) unless user.nil?
+
     client = Client.new(params)
     return { 'client_id': client.id }.to_json if ClientRepository.new.save(client)
 
-    key = client.errors.messages[client.errors.messages.keys.first][0]
-    status 400
-    {
-      'error': key,
-      'message': Messages.new.get_message(key)
-    }.to_json
+    error_response(client.errors.messages[client.errors.messages.keys.first][0], 400)
   end
 
   get '/:username', provides: :json do
-    username = params[:username]
-    result = UserRepository.new.find_by_username username
-    error = result[:error]
-    user = result[:user]
-    return { 'client_id': user.id }.to_json if error.nil?
+    result = UserRepository.new.find_by_username(params[:username])
+    return { 'client_id': result[:user].id }.to_json if result[:error].nil?
 
-    status 404
-    {
-      'error': error,
-      'message': Messages.new.get_message(error)
-    }.to_json
+    error_response(result[:error], 404)
   end
 
   post '/:username/order/:order_id/rate', provides: :json do
+    result = UserRepository.new.find_by_username(params[:username])
+
+    return error_response(result[:error], 404) if result[:error].nil?
+
     {
       'rating': 5
     }.to_json
