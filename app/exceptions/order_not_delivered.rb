@@ -1,0 +1,2 @@
+class OrderNotDelivered < RuntimeError
+end

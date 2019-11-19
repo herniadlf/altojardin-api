@@ -3,7 +3,8 @@ require_relative 'order_status'
 class Order
   include ActiveModel::Validations
 
-  attr_accessor :id, :user_id, :menu, :created_on, :updated_on, :status, :assigned_to, :rating
+  attr_reader :rating
+  attr_accessor :id, :user_id, :menu, :created_on, :updated_on, :status, :assigned_to
 
   validate :valid_menu
   validates :user_id, presence: { message: Messages::USER_NOT_EXIST_KEY }
@@ -19,10 +20,15 @@ class Order
     @status = data[:status].nil? ? OrderStatus::RECEIVED : data[:status]
     @assigned_to = data[:assigned_to]
     @weight = data[:weight]
+    @rating = data[:rating]
   end
 
   def weight
     @weight || (@weight = DB[:menu_types].first(menu: @menu)[:weight])
+  end
+
+  def rate(rating)
+    @rating = rating
   end
 
   def update_status(new_status)

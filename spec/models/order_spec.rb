@@ -71,5 +71,11 @@ describe Order do
       order.update_status('entregado')
       expect(order.status).to eq OrderStatus::DELIVERED
     end
+
+    it 'should rate order' do
+      order.update_status('entregado')
+      order.rate(2)
+      expect(order.rating).to eq 2
+    end
   end
 end
