@@ -25,7 +25,7 @@ describe OrderRepository do
   it 'should find created order' do
     order = Order.new(user_id: order_owner.id, menu: 'menu_individual')
     repository.save(order)
-    order = repository.first
+    order = repository.find(order.id)
 
     expect(order.menu).to eq 'menu_individual'
     expect(order.weight).to eq 1
@@ -46,19 +46,19 @@ describe OrderRepository do
   end
 
   it 'should find status received in created order' do
-    repository.save(Order.new(user_id: order_owner.id, menu: 'menu_individual'))
-    order = repository.first
+    order = Order.new(user_id: order_owner.id, menu: 'menu_individual')
+    repository.save(order)
+    order = repository.find(order.id)
 
     expect(order.status).to eq OrderStatus::RECEIVED
   end
 
   it 'should persist status changes' do
-    repository.save(Order.new(user_id: order_owner.id, menu: 'menu_individual'))
-    order = repository.first
+    order = Order.new(user_id: order_owner.id, menu: 'menu_individual')
+    repository.save(order)
     order.status = OrderStatus::IN_PROGRESS
     repository.save(order)
-
-    expect(repository.first.status).to eq OrderStatus::IN_PROGRESS
+    expect(repository.find(order.id).status).to eq OrderStatus::IN_PROGRESS
   end
 
   it 'should not find for username from unexistent order' do
