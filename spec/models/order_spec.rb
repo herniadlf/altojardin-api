@@ -1,4 +1,5 @@
 require 'spec_helper'
+require_relative '../../app/exceptions/order_not_delivered'
 
 describe Order do
   describe 'model' do
@@ -76,6 +77,11 @@ describe Order do
       order.update_status('entregado')
       order.rate(2)
       expect(order.rating).to eq 2
+    end
+
+    it 'should raise order not delivered' do
+      order.update_status('en_entrega')
+      expect { order.rate(2) }.to raise_error(OrderNotDelivered)
     end
   end
 end

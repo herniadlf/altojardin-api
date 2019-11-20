@@ -1,4 +1,5 @@
 require_relative 'order_status'
+require_relative '../../app/exceptions/order_not_delivered'
 
 class Order
   include ActiveModel::Validations
@@ -28,6 +29,8 @@ class Order
   end
 
   def rate(rating)
+    raise OrderNotDelivered if @status != OrderStatus::DELIVERED
+
     @rating = rating
   end
 
