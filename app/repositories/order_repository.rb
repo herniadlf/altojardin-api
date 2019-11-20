@@ -1,3 +1,5 @@
+require_relative '../../app/repositories/base_repository'
+
 class OrderRepository < BaseRepository
   self.table_name = :orders
   self.model_class = 'Order'

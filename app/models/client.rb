@@ -1,5 +1,6 @@
 require_relative '../../app/models/user'
 require_relative '../../app/messages/messages'
+require_relative '../../app/repositories/order_repository'
 
 class Client < User
   attr_accessor :address, :phone, :user_id
@@ -18,5 +19,11 @@ class Client < User
     @address = data[:address]
     @phone = data[:phone]
     @user_id = data[:user_id]
+  end
+
+  def rate_order(order_id, rating)
+    order = OrderRepository.new.find(order_id)
+    order.rate(rating)
+    OrderRepository.new.save(order)
   end
 end

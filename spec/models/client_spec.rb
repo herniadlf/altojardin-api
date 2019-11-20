@@ -1,4 +1,6 @@
 require 'spec_helper'
+require_relative '../../app/repositories/client_repository'
+require_relative '../../app/models/order'
 
 describe Client do
   describe 'model' do
@@ -35,5 +37,28 @@ describe Client do
     expect(client.valid?).to be true
     match = client.errors.messages[:address].any? { |error| error == 'invalid_address' }
     expect(match).to be false
+  end
+
+  describe 'model actions' do
+    let(:client) do
+      client = described_class.new(
+        username: 'un_nombre', phone: '4444-4123', address: 'Corrientes 1847'
+      )
+      ClientRepository.new.save(client)
+      client
+    end
+
+    let(:order_id) do
+      order = Order.new(user_id: client.id, menu: 'menu_individual')
+      order.update_status('entregado')
+      OrderRepository.new.save(order)
+      order.id
+    end
+
+    it 'rate own order with 5' do
+      client.rate_order(order_id, 5)
+      order = OrderRepository.new.find(order_id)
+      expect(order.rating).to be 5
+    end
   end
 end
