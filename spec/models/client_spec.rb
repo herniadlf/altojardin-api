@@ -1,6 +1,7 @@
 require 'spec_helper'
 require_relative '../../app/repositories/client_repository'
 require_relative '../../app/models/order'
+require_relative '../../app/exceptions/order_exception'
 
 describe Client do
   describe 'model' do
@@ -55,10 +56,14 @@ describe Client do
       order.id
     end
 
-    it 'rate own order with 5' do
+    it 'should rate own order with 5' do
       client.rate_order(order_id, 5)
       order = OrderRepository.new.find(order_id)
       expect(order.rating).to be 5
+    end
+
+    it 'should raise order not found' do
+      expect { client.rate_order(1 + order_id, 5) }.to raise_error(OrderNotFound)
     end
   end
 end

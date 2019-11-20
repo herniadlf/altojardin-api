@@ -23,6 +23,8 @@ class Client < User
 
   def rate_order(order_id, rating)
     order = OrderRepository.new.find(order_id)
+    raise OrderNotFound if order.nil?
+
     order.rate(rating)
     OrderRepository.new.save(order)
   end
