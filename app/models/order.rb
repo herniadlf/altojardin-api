@@ -30,6 +30,7 @@ class Order
 
   def rate(rating)
     raise OrderNotDelivered if @status != OrderStatus::DELIVERED
+    raise RatingRangeNotValid if (rating < 1) || (rating > 5)
 
     @rating = rating
   end

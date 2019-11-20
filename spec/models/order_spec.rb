@@ -79,9 +79,14 @@ describe Order do
       expect(order.rating).to eq 2
     end
 
-    it 'should raise order not delivered' do
+    it 'should raise order not delivered if order is in en_entrega' do
       order.update_status('en_entrega')
       expect { order.rate(2) }.to raise_error(OrderNotDelivered)
+    end
+
+    it 'should raise rating not valid for rating 6' do
+      order.update_status('entregado')
+      expect { order.rate(6) }.to raise_error(RatingRangeNotValid)
     end
   end
 end
