@@ -29,5 +29,11 @@ describe Security do
       ENV['API_KEY'] = nil
       expect(security.authorize).to eq true
     end
+
+    it 'should not authorize if request_api_key is empty' do
+      ENV['API_KEY'] = some_key
+      security = described_class.new(nil)
+      expect(security.authorize).to eq false
+    end
   end
 end
