@@ -96,4 +96,12 @@ describe OrderRepository do
     expect(result.assigned_to).to eq delivery.id
     expect(result.assigned_to_username).to eq 'kitopizzas'
   end
+
+  it 'should be rated' do
+    order = Order.new(user_id: order_owner.id, menu: 'menu_individual', assigned_to: delivery.id)
+    order.update_status('entregado')
+    order.rate(3)
+    repository.save(order)
+    expect(repository.find(order.id).rating).to eq 3
+  end
 end
