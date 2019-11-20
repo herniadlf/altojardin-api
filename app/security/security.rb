@@ -5,6 +5,9 @@ class Security
   end
 
   def authorize
-    request_api_key == ENV['API_KEY']
+    api_key = ENV['API_KEY']
+    return request_api_key == api_key unless api_key.nil?
+
+    true
   end
 end

@@ -24,5 +24,10 @@ describe Security do
       ENV['API_KEY'] = another_key
       expect(security.authorize).to eq false
     end
+
+    it 'should authorize if env has no api_key' do
+      ENV['API_KEY'] = nil
+      expect(security.authorize).to eq true
+    end
   end
 end
