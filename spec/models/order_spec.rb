@@ -1,5 +1,5 @@
 require 'spec_helper'
-require_relative '../../app/exceptions/order_not_delivered'
+require_relative '../../app/exceptions/order_exception'
 
 describe Order do
   describe 'model' do

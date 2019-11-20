@@ -1,5 +1,5 @@
 require_relative 'order_status'
-require_relative '../../app/exceptions/order_not_delivered'
+require_relative '../../app/exceptions/order_exception'
 
 class Order
   include ActiveModel::Validations
