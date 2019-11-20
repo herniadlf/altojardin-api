@@ -63,7 +63,7 @@ describe Client do
     end
 
     it 'should raise order not found' do
-      expect { client.rate_order(1 + order_id, 5) }.to raise_error(OrderNotFound)
+      expect { client.rate_order(1 + order_id, 5) }.to raise_error(OrderException)
     end
   end
 end
