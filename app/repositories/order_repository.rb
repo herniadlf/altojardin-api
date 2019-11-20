@@ -6,6 +6,10 @@ class OrderRepository < BaseRepository
     user = UserRepository.new.find_by_username username
     return { 'error': user[:error] } unless user[:error].nil?
 
+    find_for_user(order_id, user)
+  end
+
+  def find_for_user(order_id, user)
     user = user[:user]
     order = find(order_id)
     return { 'error': Messages::NO_ORDERS_KEY } if order.nil?
