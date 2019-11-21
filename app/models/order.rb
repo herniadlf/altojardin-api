@@ -1,8 +1,10 @@
 require_relative 'order_status'
+require_relative '../../app/exceptions/order_exception'
 
 class Order
   include ActiveModel::Validations
 
+  attr_reader :rating
   attr_accessor :id, :user_id, :menu, :created_on, :updated_on, :status, :assigned_to
 
   validate :valid_menu
@@ -19,10 +21,18 @@ class Order
     @status = data[:status].nil? ? OrderStatus::RECEIVED : data[:status]
     @assigned_to = data[:assigned_to]
     @weight = data[:weight]
+    @rating = data[:rating]
   end
 
   def weight
     @weight || (@weight = DB[:menu_types].first(menu: @menu)[:weight])
+  end
+
+  def rate(rating)
+    raise OrderNotDelivered if @status != OrderStatus::DELIVERED
+    raise RatingRangeNotValid if (rating < 1) || (rating > 5)
+
+    @rating = rating
   end
 
   def update_status(new_status)

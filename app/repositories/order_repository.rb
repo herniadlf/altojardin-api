@@ -1,3 +1,5 @@
+require_relative '../../app/repositories/base_repository'
+
 class OrderRepository < BaseRepository
   self.table_name = :orders
   self.model_class = 'Order'
@@ -6,13 +8,23 @@ class OrderRepository < BaseRepository
     user = UserRepository.new.find_by_username username
     return { 'error': user[:error] } unless user[:error].nil?
 
-    user = user[:user]
+    find_for_user(order_id, user[:user])
+  end
+
+  def find_for_user(order_id, user)
     order = find(order_id)
     return { 'error': Messages::NO_ORDERS_KEY } if order.nil?
 
     return { 'error': Messages::ORDER_NOT_EXIST_KEY } if order.user_id != user.id
 
     { 'order': order }
+  end
+
+  def find_if_client_has_done_orders(username)
+    DB['select * from orders
+        inner join clients on clients.user_id = orders.user_id
+        inner join users on clients.user_id = users.id
+        where users.username = ?', username].count.positive?
   end
 
   def find(id)
@@ -29,7 +41,8 @@ class OrderRepository < BaseRepository
       user_id: order.user_id,
       menu: order.menu,
       status: order.status,
-      assigned_to: order.assigned_to
+      assigned_to: order.assigned_to,
+      rating: order.rating
     }
   end
 end

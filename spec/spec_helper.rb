@@ -21,6 +21,10 @@ end
 RSpec.configure do |conf|
   conf.include Rack::Test::Methods
   conf.include Capybara
+  OrderRepository.new.delete_all
+  ClientRepository.new.delete_all
+  DeliveryRepository.new.delete_all
+  UserRepository.new.delete_all
 end
 
 def app

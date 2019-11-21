@@ -8,6 +8,8 @@ class Messages
   INVALID_MENU = 'invalid_menu'.freeze
   INVALID_STATUS = 'invalid_status'.freeze
   ALREADY_REGISTERED = 'already_registered'.freeze
+  ORDER_NOT_DELIVERED = 'order_not_delivered'.freeze
+  INVALID_RATING = 'invalid_rating'.freeze
   INVALID_API_KEY = 'invalid_api_key'.freeze
 
   def get_message(key)
@@ -21,7 +23,10 @@ class Messages
       INVALID_MENU => 'Menú inválido',
       INVALID_STATUS => 'Estado inválido',
       ALREADY_REGISTERED => 'Usuario ya registrado',
-      INVALID_API_KEY => 'api-key missing or incorrect'
+      INVALID_API_KEY => 'api-key missing or incorrect',
+      ALREADY_REGISTERED => 'Usuario ya registrado',
+      ORDER_NOT_DELIVERED => 'Order no enviada',
+      INVALID_RATING => 'Puntaje no válido'
     }
     messages[key]
   end

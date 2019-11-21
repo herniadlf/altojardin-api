@@ -1,4 +1,5 @@
 require 'spec_helper'
+require_relative '../../app/exceptions/order_exception'
 
 describe Order do
   describe 'model' do
@@ -8,6 +9,7 @@ describe Order do
     it { is_expected.to respond_to(:status) }
     it { is_expected.to respond_to(:assigned_to) }
     it { is_expected.to respond_to(:weight) }
+    it { is_expected.to respond_to(:rating) }
 
     it 'initial status should be received' do
       order = described_class.new({})
@@ -69,6 +71,22 @@ describe Order do
       expect(order.status).to eq OrderStatus::RECEIVED
       order.update_status('entregado')
       expect(order.status).to eq OrderStatus::DELIVERED
+    end
+
+    it 'should rate order' do
+      order.update_status('entregado')
+      order.rate(2)
+      expect(order.rating).to eq 2
+    end
+
+    it 'should raise order not delivered if order is in en_entrega' do
+      order.update_status('en_entrega')
+      expect { order.rate(2) }.to raise_error(OrderNotDelivered)
+    end
+
+    it 'should raise rating not valid for rating 6' do
+      order.update_status('entregado')
+      expect { order.rate(6) }.to raise_error(RatingRangeNotValid)
     end
   end
 end

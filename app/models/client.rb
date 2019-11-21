@@ -1,5 +1,7 @@
 require_relative '../../app/models/user'
 require_relative '../../app/messages/messages'
+require_relative '../../app/repositories/order_repository'
+require_relative '../../app/exceptions/order_exception'
 
 class Client < User
   attr_accessor :address, :phone, :user_id
@@ -18,5 +20,17 @@ class Client < User
     @address = data[:address]
     @phone = data[:phone]
     @user_id = data[:user_id]
+  end
+
+  def rate_order(order_id, rating)
+    o_repository = OrderRepository.new
+    raise NoOrders unless o_repository.find_if_client_has_done_orders(username)
+
+    result = o_repository.find_for_user(order_id, self)
+    raise OrderNotFound if result[:error]
+
+    order = result[:order]
+    order.rate(rating)
+    OrderRepository.new.save(order)
   end
 end
