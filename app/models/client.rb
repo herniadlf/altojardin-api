@@ -23,7 +23,13 @@ class Client < User
   end
 
   def rate_order(order_id, rating)
-    result = OrderRepository.new.find_for_user(order_id, self)
+    o_repository = OrderRepository.new
+    result = o_repository.find_for_user(order_id, self)
+
+    if result[:error]
+      raise OrderNotFound if o_repository.find_if_client_has_done_orders(username)
+    end
+
     raise OrderException, result[:error] unless result[:error].nil?
 
     order = result[:order]

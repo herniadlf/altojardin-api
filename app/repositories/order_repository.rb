@@ -20,7 +20,7 @@ class OrderRepository < BaseRepository
     { 'order': order }
   end
 
-  def find_if_user_has_done_orders(username)
+  def find_if_client_has_done_orders(username)
     DB['select * from orders
         inner join clients on clients.user_id = orders.user_id
         inner join users on clients.user_id = users.id

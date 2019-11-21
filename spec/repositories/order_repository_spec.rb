@@ -106,12 +106,12 @@ describe OrderRepository do
   end
 
   it 'should return false when user has no orders done' do
-    expect(repository.find_if_user_has_done_orders(another_owner.username)).to eq false
+    expect(repository.find_if_client_has_done_orders(another_owner.username)).to eq false
   end
 
   it 'should return true when user has orders done' do
     order = Order.new(user_id: order_owner.id, menu: 'menu_individual', assigned_to: delivery.id)
     repository.save(order)
-    expect(repository.find_if_user_has_done_orders(order_owner.username)).to eq true
+    expect(repository.find_if_client_has_done_orders(order_owner.username)).to eq true
   end
 end

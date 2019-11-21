@@ -49,21 +49,35 @@ describe Client do
       client
     end
 
-    let(:order_id) do
-      order = Order.new(user_id: client.id, menu: 'menu_individual')
-      order.update_status('entregado')
-      OrderRepository.new.save(order)
-      order.id
+    let(:another_client) do
+      another_client = described_class.new(
+        username: 'otro_nombre', phone: '4444-4123', address: 'Corrientes 1847'
+      )
+      ClientRepository.new.save(another_client)
+      another_client
+    end
+
+    let(:another_order_id) do
+      another_order = Order.new(user_id: another_client.id, menu: 'menu_individual')
+      another_order.update_status('entregado')
+      OrderRepository.new.save(another_order)
+      another_order.id
     end
 
     it 'should rate own order with 5' do
-      client.rate_order(order_id, 5)
-      order = OrderRepository.new.find(order_id)
-      expect(order.rating).to be 5
+      order = Order.new(user_id: client.id, menu: 'menu_individual')
+      order.update_status('entregado')
+      OrderRepository.new.save(order)
+      client.rate_order(order.id, 5)
+      expect(OrderRepository.new.find(order.id).rating).to be 5
     end
 
-    it 'should raise order not found' do
-      expect { client.rate_order(1 + order_id, 5) }.to raise_error(OrderException)
+    it 'should raise order exception' do
+      expect { client.rate_order(1 + another_order_id, 5) }.to raise_error(OrderException)
+    end
+
+    it 'should raise order not found when client have done an order and try to rate another' do
+      expect { client.rate_order(another_order_id, 5) }.to raise_error(OrderNotFound)
     end
   end
 end
