@@ -20,8 +20,11 @@ class OrderRepository < BaseRepository
     { 'order': order }
   end
 
-  def find_if_user_has_done_orders(_username)
-    false
+  def find_if_user_has_done_orders(username)
+    DB['select * from orders
+        inner join clients on clients.user_id = orders.user_id
+        inner join users on clients.user_id = users.id
+        where users.username = ?', username].count.positive?
   end
 
   def find(id)

@@ -5,14 +5,14 @@ describe OrderRepository do
   let(:repository) { described_class.new }
 
   let(:order_owner) do
-    user = User.new(username: 'username')
-    UserRepository.new.save(user)
+    user = Client.new(username: 'username', phone: '4567-1233', address: 'calle falsa 123')
+    ClientRepository.new.save(user)
     user
   end
 
   let(:another_owner) do
-    user = User.new(username: 'johnlennon')
-    UserRepository.new.save(user)
+    user = Client.new(username: 'johnlennon', phone: '4567-1233', address: 'calle falsa 123')
+    ClientRepository.new.save(user)
     user
   end
 
@@ -105,7 +105,13 @@ describe OrderRepository do
     expect(repository.find(order.id).rating).to eq 3
   end
 
-  it 'should not fine orders from user' do
+  it 'should return false when user has no orders done' do
     expect(repository.find_if_user_has_done_orders(another_owner.username)).to eq false
+  end
+
+  it 'should return true when user has orders done' do
+    order = Order.new(user_id: order_owner.id, menu: 'menu_individual', assigned_to: delivery.id)
+    repository.save(order)
+    expect(repository.find_if_user_has_done_orders(order_owner.username)).to eq true
   end
 end
