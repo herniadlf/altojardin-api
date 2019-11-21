@@ -104,4 +104,8 @@ describe OrderRepository do
     repository.save(order)
     expect(repository.find(order.id).rating).to eq 3
   end
+
+  it 'should not fine orders from user' do
+    expect(repository.find_if_user_has_done_orders(another_owner.username)).to eq false
+  end
 end

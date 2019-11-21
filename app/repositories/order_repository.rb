@@ -20,6 +20,10 @@ class OrderRepository < BaseRepository
     { 'order': order }
   end
 
+  def find_if_user_has_done_orders(_username)
+    false
+  end
+
   def find(id)
     order = dataset.first(pk_column => id)
     return load_object order unless order.nil?
