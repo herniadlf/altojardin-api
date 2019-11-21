@@ -65,11 +65,8 @@ describe Client do
     end
 
     it 'should rate own order with 5' do
-      order = Order.new(user_id: client.id, menu: 'menu_individual')
-      order.update_status('entregado')
-      OrderRepository.new.save(order)
-      client.rate_order(order.id, 5)
-      expect(OrderRepository.new.find(order.id).rating).to be 5
+      another_client.rate_order(another_order_id, 5)
+      expect(OrderRepository.new.find(another_order_id).rating).to be 5
     end
 
     it 'should raise order exception' do
