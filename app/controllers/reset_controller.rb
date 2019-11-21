@@ -6,6 +6,7 @@ DeliveryApi::App.controllers do
     end
     OrderRepository.new.delete_all
     ClientRepository.new.delete_all
+    DeliveryRepository.new.delete_all
     UserRepository.new.delete_all
     'Ok'
   end
