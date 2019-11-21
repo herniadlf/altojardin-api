@@ -1,9 +1,16 @@
 require_relative '../../app/models/client'
 require_relative '../../app/repositories/client_repository'
 require_relative '../../app/messages/messages'
+require_relative '../../app/security/security'
 
 DeliveryApi::App.controllers :client do
   post '/', provides: :json do
+    auth = Security.new(request.env['HTTP_API_KEY']).authorize
+    unless auth
+      status 403
+      key = Messages::INVALID_API_KEY
+      return { 'error': key, 'message': Messages.new.get_message(key) }.to_json
+    end
     username = params[:username]
     user = UserRepository.new.find_by_username(username)[:user]
     unless user.nil?
@@ -23,6 +30,12 @@ DeliveryApi::App.controllers :client do
   end
 
   get '/:username', provides: :json do
+    auth = Security.new(request.env['HTTP_API_KEY']).authorize
+    unless auth
+      status 403
+      key = Messages::INVALID_API_KEY
+      return { 'error': key, 'message': Messages.new.get_message(key) }.to_json
+    end
     username = params[:username]
     result = UserRepository.new.find_by_username username
     error = result[:error]
