@@ -3,6 +3,12 @@ require_relative '../../app/repositories/delivery_repository'
 
 DeliveryApi::App.controllers :delivery do
   post '/', provides: :json do
+    auth = Security.new(request.env['HTTP_API_KEY']).authorize
+    unless auth
+      status 403
+      key = Messages::INVALID_API_KEY
+      return { 'error': key, 'message': Messages.new.get_message(key) }.to_json
+    end
     username = params[:username]
     user = UserRepository.new.find_by_username(username)[:user]
     unless user.nil?
