@@ -1,6 +1,7 @@
 require_relative '../../app/models/client'
 require_relative '../../app/repositories/client_repository'
 require_relative '../../app/messages/messages'
+require_relative '../../app/security/security'
 
 def error_response(key, status_code)
   status status_code
@@ -12,6 +13,12 @@ end
 
 DeliveryApi::App.controllers :client do
   post '/', provides: :json do
+    auth = Security.new(request.env['HTTP_API_KEY']).authorize
+    unless auth
+      status 403
+      key = Messages::INVALID_API_KEY
+      return { 'error': key, 'message': Messages.new.get_message(key) }.to_json
+    end
     user = UserRepository.new.find_by_username(params[:username])[:user]
     return error_response(Messages::ALREADY_REGISTERED, 400) unless user.nil?
 
@@ -22,6 +29,12 @@ DeliveryApi::App.controllers :client do
   end
 
   get '/:username', provides: :json do
+    auth = Security.new(request.env['HTTP_API_KEY']).authorize
+    unless auth
+      status 403
+      key = Messages::INVALID_API_KEY
+      return { 'error': key, 'message': Messages.new.get_message(key) }.to_json
+    end
     result = UserRepository.new.find_by_username(params[:username])
     return { 'client_id': result[:user].id }.to_json if result[:error].nil?
 

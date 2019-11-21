@@ -10,6 +10,7 @@ class Messages
   ALREADY_REGISTERED = 'already_registered'.freeze
   ORDER_NOT_DELIVERED = 'order_not_delivered'.freeze
   INVALID_RATING = 'invalid_rating'.freeze
+  INVALID_API_KEY = 'invalid_api_key'.freeze
 
   def get_message(key)
     messages = {
@@ -21,6 +22,8 @@ class Messages
       NO_ORDERS_KEY => 'No existe el pedido',
       INVALID_MENU => 'Menú inválido',
       INVALID_STATUS => 'Estado inválido',
+      ALREADY_REGISTERED => 'Usuario ya registrado',
+      INVALID_API_KEY => 'api-key missing or incorrect',
       ALREADY_REGISTERED => 'Usuario ya registrado',
       ORDER_NOT_DELIVERED => 'Order no enviada',
       INVALID_RATING => 'Puntaje no válido'
