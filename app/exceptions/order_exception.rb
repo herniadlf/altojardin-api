@@ -19,7 +19,7 @@ class OrderNotDelivered < OrderException
   end
 end
 
-class OrderNotFromUser < OrderException
+class NoOrders < OrderException
   def initialize
     super(Messages::NO_ORDERS_KEY)
   end
