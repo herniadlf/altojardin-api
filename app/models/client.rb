@@ -27,8 +27,7 @@ class Client < User
     raise NoOrders unless o_repository.find_if_client_has_done_orders(username)
 
     result = o_repository.find_for_user(order_id, self)
-
-    raise OrderException, result[:error] unless result[:error].nil?
+    raise OrderNotFound if result[:error]
 
     order = result[:order]
     order.rate(rating)
