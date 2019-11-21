@@ -29,12 +29,18 @@ DeliveryApi::App.controllers :client do
   end
 
   post '/:username/order/:order_id/rate', provides: :json do
-    result = UserRepository.new.find_by_username(params[:username])
+    result = ClientRepository.new.find_by_username(params[:username])
 
-    return error_response(result[:error], 404) if result[:error].nil?
+    return error_response(result[:error], 404) unless result[:error].nil?
+
+    begin
+      result[:client].rate_order(params[:order_id], params[:rating])
+    rescue OrderException => e
+      return error_response(e.key, 400)
+    end
 
     {
-      'rating': 5
+      'rating': params[:rating]
     }.to_json
   end
 end
