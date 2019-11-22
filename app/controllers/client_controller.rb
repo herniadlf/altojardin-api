@@ -14,10 +14,10 @@ DeliveryApi::App.controllers :client do
     return { 'client_id': client.id }.to_json if ClientRepository.new.save(client)
 
     error_response(client.errors.messages[client.errors.messages.keys.first][0], 400)
-  rescue UserAlreadyRegisteredException => e
-    error_response(e.key, 400)
   rescue SecurityException => e
     error_response(e.key, 403)
+  rescue UserException => e
+    error_response(e.key, 400)
   end
 
   get '/:username', provides: :json do

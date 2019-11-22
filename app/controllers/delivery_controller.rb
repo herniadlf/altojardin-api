@@ -16,9 +16,9 @@ DeliveryApi::App.controllers :delivery do
       'error': key,
       'message': Messages.new.get_message(key)
     }.to_json
-  rescue UserAlreadyRegisteredException => e
-    error_response(e.key, 400)
   rescue SecurityException => e
     error_response(e.key, 403)
+  rescue UserException => e
+    error_response(e.key, 400)
   end
 end
