@@ -1,14 +1,11 @@
-require_relative '../../app/models/order'
-require_relative '../../app/repositories/order_repository'
+require_relative '../models/order'
+require_relative '../repositories/order_repository'
+require_relative 'utils'
 
 DeliveryApi::App.controllers do
   post 'client/:username/order', provides: :json do
-    auth = Security.new(request.env['HTTP_API_KEY']).authorize
-    unless auth
-      status 403
-      key = Messages::INVALID_API_KEY
-      return { 'error': key, 'message': Messages.new.get_message(key) }.to_json
-    end
+    Security.new(request.env['HTTP_API_KEY']).authorize
+
     result = UserRepository.new.find_by_username(params['username'])
     user = result[:user]
     error = result[:error]
@@ -24,15 +21,13 @@ DeliveryApi::App.controllers do
       'error': key,
       'message': Messages.new.get_message(key)
     }.to_json
+  rescue SecurityException => e
+    error_response(e.key, 403)
   end
 
   get 'client/:username/order/:order_id', provides: :json do
-    auth = Security.new(request.env['HTTP_API_KEY']).authorize
-    unless auth
-      status 403
-      key = Messages::INVALID_API_KEY
-      return { 'error': key, 'message': Messages.new.get_message(key) }.to_json
-    end
+    Security.new(request.env['HTTP_API_KEY']).authorize
+
     order_id = params[:order_id]
     username = params[:username]
     result = OrderRepository.new.find_for_username(order_id, username)
@@ -51,15 +46,12 @@ DeliveryApi::App.controllers do
       'error': error,
       'message': Messages.new.get_message(error)
     }.to_json
+  rescue SecurityException => e
+    error_response(e.key, 403)
   end
 
   put 'order/:order_id/status', provides: :json do
-    auth = Security.new(request.env['HTTP_API_KEY']).authorize
-    unless auth
-      status 403
-      key = Messages::INVALID_API_KEY
-      return { 'error': key, 'message': Messages.new.get_message(key) }.to_json
-    end
+    Security.new(request.env['HTTP_API_KEY']).authorize
     order_id = params[:order_id]
     new_status = params[:status]
     order = OrderRepository.new.find(order_id)
@@ -69,5 +61,7 @@ DeliveryApi::App.controllers do
       return { error: error, message: Messages.new.get_message(error) }.to_json
     end
     order.update_status(new_status)
+  rescue SecurityException => e
+    error_response(e.key, 403)
   end
 end

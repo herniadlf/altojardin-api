@@ -1,31 +1,25 @@
-require_relative '../../app/messages/messages'
+require_relative '../messages/messages'
+require_relative 'api_exception'
 
-class OrderException < RuntimeError
-  attr_reader :key
-  def initialize(key)
-    @key = key
-  end
-end
-
-class OrderNotFound < OrderException
+class OrderNotFound < ApiException
   def initialize
     super(Messages::ORDER_NOT_EXIST_KEY)
   end
 end
 
-class OrderNotDelivered < OrderException
+class OrderNotDelivered < ApiException
   def initialize
     super(Messages::ORDER_NOT_DELIVERED)
   end
 end
 
-class NoOrders < OrderException
+class NoOrders < ApiException
   def initialize
     super(Messages::NO_ORDERS_KEY)
   end
 end
 
-class RatingRangeNotValid < OrderException
+class RatingRangeNotValid < ApiException
   def initialize
     super(Messages::INVALID_RATING)
   end

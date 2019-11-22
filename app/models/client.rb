@@ -1,7 +1,7 @@
-require_relative '../../app/models/user'
-require_relative '../../app/messages/messages'
-require_relative '../../app/repositories/order_repository'
-require_relative '../../app/exceptions/order_exception'
+require_relative 'user'
+require_relative '../messages/messages'
+require_relative '../repositories/order_repository'
+require_relative '../exceptions/order_exception'
 
 class Client < User
   attr_accessor :address, :phone, :user_id

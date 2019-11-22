@@ -1,4 +1,4 @@
-require_relative '../../app/messages/messages'
+require_relative '../messages/messages'
 
 class User
   include ActiveModel::Validations
@@ -8,7 +8,7 @@ class User
   VALID_REGEX = /\A[a-z0-9_]{5,19}\z/i
 
   validates :username, presence: true, format: { with: VALID_REGEX,
-                                                 message: Messages::INVALID_USERNAME_KEY }
+                                                 message: 'invalid_username' }
   def initialize(data = {})
     @id = data[:id]
     @created_on = data[:created_on]
