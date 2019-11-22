@@ -7,6 +7,18 @@ class OrderException < ApiException
   end
 end
 
+class InvalidMenuException < OrderException
+  def initialize
+    super(Messages::INVALID_MENU)
+  end
+end
+
+class InvalidStatusException < OrderException
+  def initialize
+    super(Messages::INVALID_STATUS)
+  end
+end
+
 class OrderNotFound < OrderException
   def initialize
     super(Messages::ORDER_NOT_EXIST_KEY)

@@ -5,22 +5,16 @@ require_relative 'utils'
 DeliveryApi::App.controllers do
   post 'client/:username/order', provides: :json do
     Security.new(request.env['HTTP_API_KEY']).authorize
+    client = ClientRepository.new.find_by_username!(params['username'])
 
-    result = UserRepository.new.find_by_username(params['username'])
-    user = result[:user]
-    error = result[:error]
-    params[:user_id] = user.id if error.nil?
+    params[:user_id] = client.id
     params[:menu] = params['order']
-    order = Order.new(params)
-    result = OrderRepository.new.save(order)
-    return { 'order_id': order.id }.to_json if result
 
-    key = order.errors.messages[order.errors.messages.keys.first][0]
-    status 400
-    {
-      'error': key,
-      'message': Messages.new.get_message(key)
-    }.to_json
+    order = Order.new(params)
+    OrderRepository.new.save(order)
+    { 'order_id': order.id }.to_json
+  rescue UserException, OrderException => e
+    error_response(e.key, 400)
   rescue SecurityException => e
     error_response(e.key, 403)
   end

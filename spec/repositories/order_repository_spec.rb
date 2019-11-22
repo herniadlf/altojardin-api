@@ -1,5 +1,6 @@
 require 'integration_spec_helper'
 require_relative '../../app/models/order'
+require_relative '../../app/exceptions/order_exception'
 
 describe OrderRepository do
   let(:repository) { described_class.new }
@@ -32,17 +33,15 @@ describe OrderRepository do
   end
 
   it 'creation should fail if user is empty' do
-    order = Order.new(menu: 'menu_individual')
-    repository.save(order)
-    expect(order.valid?).to eq false
-    expect(order.errors.messages[order.errors.messages.keys.first][0]).to eq 'not_registered'
+    expect do
+      Order.new(menu: 'menu_individual')
+    end.to raise_error(UnexistentUserException)
   end
 
   it 'creation should fail with invalid menu' do
-    order = Order.new(user_id: order_owner.id, menu: 'big_mac')
-    repository.save(order)
-    expect(order.valid?).to eq false
-    expect(order.errors.messages[order.errors.messages.keys.first][0]).to eq 'invalid_menu'
+    expect do
+      Order.new(user_id: order_owner.id, menu: 'big_mac')
+    end.to raise_error(InvalidMenuException)
   end
 
   it 'should find status received in created order' do
