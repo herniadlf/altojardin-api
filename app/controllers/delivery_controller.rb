@@ -5,13 +5,8 @@ require_relative 'utils'
 DeliveryApi::App.controllers :delivery do
   post '/', provides: :json do
     Security.new(request.env['HTTP_API_KEY']).authorize
-    username = params[:username]
-    user = UserRepository.new.find_by_username(username)[:user]
-    unless user.nil?
-      status 400
-      key = Messages::ALREADY_REGISTERED
-      return { 'error': key, 'message': Messages.new.get_message(key) }.to_json
-    end
+    UserRepository.new.check_unexistent!(params[:username])
+
     delivery = Delivery.new(params)
     return { 'delivery_id': delivery.id }.to_json if DeliveryRepository.new.save(delivery)
 
@@ -21,6 +16,8 @@ DeliveryApi::App.controllers :delivery do
       'error': key,
       'message': Messages.new.get_message(key)
     }.to_json
+  rescue UserAlreadyRegisteredException => e
+    error_response(e.key, 400)
   rescue SecurityException => e
     error_response(e.key, 403)
   end
