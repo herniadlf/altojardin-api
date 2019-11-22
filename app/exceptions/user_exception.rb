@@ -17,3 +17,9 @@ class InvalidUsernameException < UserException
     super(Messages::INVALID_USERNAME_KEY)
   end
 end
+
+class UnexistentUserException < UserException
+  def initialize
+    super(Messages::USER_NOT_EXIST_KEY)
+  end
+end

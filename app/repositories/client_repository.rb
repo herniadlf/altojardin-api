@@ -6,14 +6,12 @@ class ClientRepository < BaseRepository
     UserRepository.new.save(a_record) && super(a_record)
   end
 
-  def find_by_username(username)
-    result = UserRepository.new.find_by_username(username)
-    return result unless result[:error].nil?
+  def find_by_username!(username)
+    user = UserRepository.new.find_by_username!(username)
+    result = dataset.first(user_id: user.id)
+    raise UnexistentUserException if result.nil?
 
-    result = dataset.first(user_id: result[:user].id)
-    return { client: load_object(result) } unless result.nil?
-
-    { 'error': Messages::USER_NOT_EXIST_KEY }
+    load_object(result)
   end
 
   protected

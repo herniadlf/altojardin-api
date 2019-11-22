@@ -9,6 +9,13 @@ class UserRepository < BaseRepository
     { 'error': Messages::USER_NOT_EXIST_KEY }
   end
 
+  def find_by_username!(username)
+    result = find_by_username(username)
+    raise UnexistentUserException unless result[:error].nil?
+
+    result[:user]
+  end
+
   def check_unexistent!(username)
     result = find_by_username(username)
     raise UserAlreadyRegisteredException unless result[:user].nil?

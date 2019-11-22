@@ -21,29 +21,22 @@ DeliveryApi::App.controllers :client do
 
   get '/:username', provides: :json do
     Security.new(request.env['HTTP_API_KEY']).authorize
-    result = UserRepository.new.find_by_username(params[:username])
-    return { 'client_id': result[:user].id }.to_json if result[:error].nil?
-
-    error_response(result[:error], 404)
+    user = UserRepository.new.find_by_username!(params[:username])
+    { 'client_id': user.id }.to_json
+  rescue UnexistentUserException => e
+    error_response(e.key, 404)
   rescue SecurityException => e
     error_response(e.key, 403)
   end
 
   post '/:username/order/:order_id/rate', provides: :json do
     Security.new(request.env['HTTP_API_KEY']).authorize
-    result = ClientRepository.new.find_by_username(params[:username])
+    client = ClientRepository.new.find_by_username!(params[:username])
 
-    return error_response(result[:error], 404) unless result[:error].nil?
-
-    begin
-      result[:client].rate_order(params[:order_id], params[:rating])
-    rescue ApiException => e
-      return error_response(e.key, 400)
-    end
-
-    {
-      'rating': params[:rating]
-    }.to_json
+    client.rate_order(params[:order_id], params[:rating])
+    { 'rating': params[:rating] }.to_json
+  rescue UserException, OrderException => e
+    error_response(e.key, 404)
   rescue SecurityException => e
     error_response(e.key, 403)
   end

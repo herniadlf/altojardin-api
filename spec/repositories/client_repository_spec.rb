@@ -15,14 +15,15 @@ describe ClientRepository do
   end
 
   it 'should find user with username' do
-    client = repository.find_by_username(new_client.username)
-    expect(client[:client].phone).to eq '1233-1233'
-    expect(client[:client].address).to eq 'callefalsa 123'
+    client = repository.find_by_username!(new_client.username)
+    expect(client.phone).to eq '1233-1233'
+    expect(client.address).to eq 'callefalsa 123'
   end
 
   it 'should not find user with invalid username' do
     username = 'nameuser'
-    client = repository.find_by_username(username)
-    expect(client[:client].nil?).to eq true
+    expect do
+      repository.find_by_username!(username)
+    end.to raise_error UnexistentUserException
   end
 end
