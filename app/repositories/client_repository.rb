@@ -39,11 +39,10 @@ class ClientRepository < BaseRepository
   end
 
   def load_object(a_record)
-    client = super
-    user = UserRepository.new.find(client.user_id)
-    client.id = user.id
-    client.username = user.username
-    client
+    user = UserRepository.new.find(a_record[:user_id])
+    a_record[:id] = user.id
+    a_record[:username] = user.username
+    super
   end
 
   def pk_column

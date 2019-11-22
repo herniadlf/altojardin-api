@@ -4,7 +4,7 @@ require_relative '../../app/models/order'
 require_relative '../../app/exceptions/order_exception'
 
 describe Client do
-  describe 'model' do
+  describe described_class.new(username: 'Carlos') do
     it { is_expected.to respond_to(:id) }
     it { is_expected.to respond_to(:username) }
     it { is_expected.to respond_to(:phone) }
@@ -20,14 +20,14 @@ describe Client do
   end
 
   it 'should not be valid with an address like "abc123"' do
-    client = described_class.new(address: 'abc123')
+    client = described_class.new(username: 'Carlos', address: 'abc123')
     expect(client.valid?).to be false
     match = client.errors.messages[:address].any? { |error| error == 'invalid_address' }
     expect(match).to be true
   end
 
   it 'should not be valid with an address like "asd"' do
-    client = described_class.new(address: 'asd')
+    client = described_class.new(username: 'Carlos', address: 'asd')
     expect(client.valid?).to be false
     match = client.errors.messages[:address].any? { |error| error == 'invalid_address' }
     expect(match).to be true
