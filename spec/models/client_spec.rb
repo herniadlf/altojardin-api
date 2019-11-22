@@ -4,7 +4,7 @@ require_relative '../../app/models/order'
 require_relative '../../app/exceptions/order_exception'
 
 describe Client do
-  describe described_class.new(username: 'Carlos') do
+  describe described_class.new(username: 'Carlos', address: 'Av 123', phone: '4121-2314') do
     it { is_expected.to respond_to(:id) }
     it { is_expected.to respond_to(:username) }
     it { is_expected.to respond_to(:phone) }
@@ -13,24 +13,21 @@ describe Client do
   end
 
   it 'should not be valid with an invalid phone' do
-    client = described_class.new(username: 'Carlos', phone: 'abcd-4123')
-    expect(client.valid?).to be false
-    match = client.errors.messages[:phone].any? { |error| error == 'invalid_phone' }
-    expect(match).to be true
+    expect do
+      described_class.new(username: 'Carlos', phone: 'abcd-4123')
+    end.to raise_error(InvalidPhoneException)
   end
 
   it 'should not be valid with an address like "abc123"' do
-    client = described_class.new(username: 'Carlos', address: 'abc123')
-    expect(client.valid?).to be false
-    match = client.errors.messages[:address].any? { |error| error == 'invalid_address' }
-    expect(match).to be true
+    expect do
+      described_class.new(username: 'Carlos', address: 'abc123', phone: '4121-2314')
+    end.to raise_error(InvalidAddressException)
   end
 
   it 'should not be valid with an address like "asd"' do
-    client = described_class.new(username: 'Carlos', address: 'asd')
-    expect(client.valid?).to be false
-    match = client.errors.messages[:address].any? { |error| error == 'invalid_address' }
-    expect(match).to be true
+    expect do
+      described_class.new(username: 'Carlos', address: 'asd', phone: '4121-2314')
+    end.to raise_error(InvalidAddressException)
   end
 
   it 'should be valid with an address like "Corrientes 1847"' do

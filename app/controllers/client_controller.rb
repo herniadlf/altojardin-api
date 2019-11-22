@@ -11,9 +11,8 @@ DeliveryApi::App.controllers :client do
     UserRepository.new.check_unexistent!(params[:username])
 
     client = Client.new(params)
-    return { 'client_id': client.id }.to_json if ClientRepository.new.save(client)
-
-    error_response(client.errors.messages[client.errors.messages.keys.first][0], 400)
+    ClientRepository.new.save(client)
+    { 'client_id': client.id }.to_json
   rescue SecurityException => e
     error_response(e.key, 403)
   rescue UserException => e
