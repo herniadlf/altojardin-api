@@ -1,4 +1,6 @@
 class Weather
+  include ActiveModel::Validations
+
   attr_accessor :id, :date, :rain
 
   def initialize(data)
