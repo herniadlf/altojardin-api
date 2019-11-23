@@ -4,6 +4,7 @@ class WeatherRepository < BaseRepository
 
   BUENOS_AIRES_ID = 3_433_955
   APP_ID = ENV['WEATHER_APP_ID'] | ''
+  RAIN_CODES = %w[Rain Thunderstorm Drizzle Snow Tornado Sand].freeze
 
   def find_by_date(date)
     row = dataset.first(date: date)
@@ -25,7 +26,7 @@ class WeatherRepository < BaseRepository
     body = JSON.parse(response.body)
     puts('Body inspect')
     puts(body.inspect)
-    body['weather'][0]['mail'] == 'rain'
+    RAIN_CODES.include? body['weather'][0]['main']
   end
 
   def ba_id
