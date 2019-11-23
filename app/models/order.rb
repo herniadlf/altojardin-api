@@ -17,6 +17,10 @@ class Order
     @weight || (@weight = DB[:menu_types].first(menu: @menu)[:weight])
   end
 
+  def price
+    MENU_PRICES[@menu]
+  end
+
   def rate(rating)
     raise OrderNotDelivered if @status != OrderStatus::DELIVERED
     raise RatingRangeNotValid if (rating < 1) || (rating > 5)
@@ -45,6 +49,12 @@ class Order
   end
 
   private
+
+  MENU_PRICES = {
+    'menu_individual' => 100.0,
+    'menu_pareja' => 175.0,
+    'menu_familiar' => 250 - 0
+  }.freeze
 
   def initialize_mandatories(data = {})
     @id = data[:id]
