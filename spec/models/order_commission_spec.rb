@@ -13,7 +13,7 @@ describe OrderCommission do
       expect(commission.calculate).to eq 5.0
     end
 
-    it 'should be 8.75 when order is menu_parejas and rating is 3' do
+    it 'should be 8.75 when order is menu_pareja and rating is 3' do
       commission = described_class.new(order_price: 175.0, rating: 3, rainy: false)
       expect(commission.calculate).to eq 8.75
     end
@@ -28,6 +28,16 @@ describe OrderCommission do
     it 'should be 3.0 when order is menu_individual and rating is 1' do
       commission = described_class.new(order_price: 100.0, rating: 1, rainy: false)
       expect(commission.calculate).to eq 3.0
+    end
+
+    it 'should be 5.25 when order is menu_pareja and rating is 1' do
+      commission = described_class.new(order_price: 175.0, rating: 1, rainy: false)
+      expect(commission.calculate).to eq 5.25
+    end
+
+    it 'should be 7.5 when order is menu_familiar and rating is 1' do
+      commission = described_class.new(order_price: 250.0, rating: 1, rainy: false)
+      expect(commission.calculate).to eq 7.5
     end
   end
 end
