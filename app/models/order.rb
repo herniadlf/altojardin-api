@@ -7,21 +7,10 @@ class Order
   attr_reader :rating
   attr_accessor :id, :user_id, :menu, :created_on, :updated_on, :status, :assigned_to
 
-  validate :valid_menu
-  validates :user_id, presence: { message: Messages::USER_NOT_EXIST_KEY }
-  validates :status, inclusion: { in: OrderStatus::RECEIVED..OrderStatus::CANCELLED,
-                                  message: Messages::INVALID_STATUS }
-
   def initialize(data = {})
-    @id = data[:id]
-    @user_id = data[:user_id]
-    @menu = data[:menu]
-    @created_on = data[:created_on]
-    @updated_on = data[:updated_on]
-    @status = data[:status].nil? ? OrderStatus::RECEIVED : data[:status]
-    @assigned_to = data[:assigned_to]
-    @weight = data[:weight]
-    @rating = data[:rating]
+    validate_data data
+    initialize_mandatories(data)
+    initialize_nullables(data)
   end
 
   def weight
@@ -36,6 +25,8 @@ class Order
   end
 
   def update_status(new_status)
+    raise InvalidStatusException if OrderStatus::TO_STATUS_MAP[new_status].nil?
+
     OrderStatus.observer(self, new_status).update
   end
 
@@ -55,9 +46,41 @@ class Order
 
   private
 
-  def valid_menu
-    errors.add(:menu, Messages::INVALID_MENU) unless VALID_MENUS.include? @menu
+  def initialize_mandatories(data = {})
+    @id = data[:id]
+    @user_id = data[:user_id]
+    @menu = data[:menu]
+    @status = data[:status].nil? ? OrderStatus::RECEIVED : data[:status]
+  end
+
+  def initialize_nullables(data = {})
+    @created_on = data[:created_on]
+    @updated_on = data[:updated_on]
+    @assigned_to = data[:assigned_to]
+    @weight = data[:weight]
+    @rating = data[:rating]
+  end
+
+  def validate_data(data)
+    valid_menu(data[:menu])
+    valid_user(data[:user_id])
+    valid_status(data[:status])
+  end
+
+  def valid_menu(menu)
+    invalid = menu.nil? || !VALID_MENUS.include?(menu)
+    raise InvalidMenuException if invalid
+  end
+
+  def valid_user(user_id)
+    raise UnexistentUserException if user_id.nil?
+  end
+
+  def valid_status(status)
+    valid = status.nil? || VALID_STATUS.include?(status)
+    raise InvalidStatusException unless valid
   end
 
   VALID_MENUS = %w[menu_individual menu_pareja menu_familiar].freeze
+  VALID_STATUS = OrderStatus::RECEIVED..OrderStatus::CANCELLED.freeze
 end

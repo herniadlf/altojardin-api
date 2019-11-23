@@ -42,11 +42,10 @@ class DeliveryRepository < BaseRepository
   end
 
   def load_object(a_record)
-    delivery = super
-    user = UserRepository.new.find(delivery.user_id)
-    delivery.id = user.id
-    delivery.username = user.username
-    delivery
+    user = UserRepository.new.find(a_record[:user_id])
+    a_record[:id] = user.id
+    a_record[:username] = user.username
+    super
   end
 
   def deliveries_with_capacity(needed_capacity)

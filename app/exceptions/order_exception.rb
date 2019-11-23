@@ -1,9 +1,21 @@
-require_relative '../../app/messages/messages'
+require_relative '../messages/messages'
+require_relative 'api_exception'
 
-class OrderException < RuntimeError
-  attr_reader :key
-  def initialize(key)
-    @key = key
+class OrderException < ApiException
+  def initialize(msg)
+    super(msg)
+  end
+end
+
+class InvalidMenuException < OrderException
+  def initialize
+    super(Messages::INVALID_MENU)
+  end
+end
+
+class InvalidStatusException < OrderException
+  def initialize
+    super(Messages::INVALID_STATUS)
   end
 end
 

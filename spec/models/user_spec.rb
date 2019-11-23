@@ -1,29 +1,28 @@
 require 'spec_helper'
 
 describe User do
-  describe 'model' do
+  describe described_class.new(username: 'Carlos') do
     it { is_expected.to respond_to(:id) }
     it { is_expected.to respond_to(:username) }
+  end
 
+  describe 'validations' do
     it 'should not be valid with an invalid name' do
-      user = described_class.new(username: '#!?')
-      expect(user.valid?).to be false
-      match = user.errors.messages[:username].any? { |error| error == 'invalid_username' }
-      expect(match).to be true
+      expect do
+        described_class.new(username: '#!?')
+      end.to raise_error InvalidUsernameException
     end
 
     it 'should not be valid with a short name' do
-      user = described_class.new(username: 'pepe')
-      expect(user.valid?).to be false
-      match = user.errors.messages[:username].any? { |error| error == 'invalid_username' }
-      expect(match).to be true
+      expect do
+        described_class.new(username: 'pepe')
+      end.to raise_error InvalidUsernameException
     end
 
     it 'should not be valid with a long name' do
-      user = described_class.new(username: 'elseniordelosanillos')
-      expect(user.valid?).to be false
-      match = user.errors.messages[:username].any? { |error| error == 'invalid_username' }
-      expect(match).to be true
+      expect do
+        described_class.new(username: 'elseniordelosanillos')
+      end.to raise_error InvalidUsernameException
     end
   end
 end
