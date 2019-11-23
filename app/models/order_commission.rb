@@ -8,7 +8,7 @@ class OrderCommission
 
   def calculate
     rating_commission = RATING_COMMISSION[@rating]
-    @order_price * rating_commission
+    (@order_price * rating_commission).round(2)
   end
 
   BAD_RATING_COMMISSION = 0.03
