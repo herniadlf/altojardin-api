@@ -7,7 +7,7 @@ describe OrderCommission do
     it { is_expected.to respond_to(:rainy) }
   end
 
-  describe 'No rainy day commission' do
+  describe 'No rainy day and default rating' do
     it 'should be 5.0 when order is menu_individual and rating is 3' do
       commission = described_class.new(order_price: 100.0, rating: 3, rainy: false)
       expect(commission.calculate).to eq 5.0
@@ -21,6 +21,13 @@ describe OrderCommission do
     it 'should be 12.5 when order is menu_familiar and rating is 3' do
       commission = described_class.new(order_price: 250.0, rating: 3, rainy: false)
       expect(commission.calculate).to eq 12.5
+    end
+  end
+
+  describe 'No rainy day and rating is 1' do
+    it 'should be 3.0 when order is menu_individual and rating is 1' do
+      commission = described_class.new(order_price: 100.0, rating: 1, rainy: false)
+      expect(commission.calculate).to eq 3.0
     end
   end
 end
