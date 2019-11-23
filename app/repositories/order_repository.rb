@@ -4,20 +4,18 @@ class OrderRepository < BaseRepository
   self.table_name = :orders
   self.model_class = 'Order'
 
-  def find_for_username(order_id, username)
-    user = UserRepository.new.find_by_username username
-    return { 'error': user[:error] } unless user[:error].nil?
-
-    find_for_user(order_id, user[:user])
+  def find_for_username!(order_id, username)
+    user = UserRepository.new.find_by_username! username
+    find_for_user!(order_id, user)
   end
 
-  def find_for_user(order_id, user)
+  def find_for_user!(order_id, user)
     order = find(order_id)
-    return { 'error': Messages::NO_ORDERS_KEY } if order.nil?
+    raise NoOrders if order.nil?
 
-    return { 'error': Messages::ORDER_NOT_EXIST_KEY } if order.user_id != user.id
+    raise OrderNotFound if order.user_id != user.id
 
-    { 'order': order }
+    order
   end
 
   def find_if_client_has_done_orders(username)
@@ -30,6 +28,13 @@ class OrderRepository < BaseRepository
   def find(id)
     order = dataset.first(pk_column => id)
     return load_object order unless order.nil?
+
+    order
+  end
+
+  def find!(id)
+    order = find(id)
+    raise OrderNotFound if order.nil?
 
     order
   end

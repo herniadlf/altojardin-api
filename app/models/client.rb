@@ -18,10 +18,7 @@ class Client < User
     o_repository = OrderRepository.new
     raise NoOrders unless o_repository.find_if_client_has_done_orders(username)
 
-    result = o_repository.find_for_user(order_id, self)
-    raise OrderNotFound if result[:error]
-
-    order = result[:order]
+    order = o_repository.find_for_user!(order_id, self)
     order.rate(rating)
     OrderRepository.new.save(order)
   end

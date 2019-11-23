@@ -24,22 +24,14 @@ DeliveryApi::App.controllers do
 
     order_id = params[:order_id]
     username = params[:username]
-    result = OrderRepository.new.find_for_username(order_id, username)
-    order = result[:order]
-    error = result[:error]
-    if error.nil?
-      return {
-        'order_status': order.status_label[:key],
-        'assigned_to': order.assigned_to_username,
-        'message': order.status_label[:message]
-      }.to_json
-    end
-
-    status 400
+    order = OrderRepository.new.find_for_username!(order_id, username)
     {
-      'error': error,
-      'message': Messages.new.get_message(error)
+      'order_status': order.status_label[:key],
+      'assigned_to': order.assigned_to_username,
+      'message': order.status_label[:message]
     }.to_json
+  rescue UserException, OrderException => e
+    error_response(e.key, 400)
   rescue SecurityException => e
     error_response(e.key, 403)
   end
@@ -48,13 +40,10 @@ DeliveryApi::App.controllers do
     Security.new(request.env['HTTP_API_KEY']).authorize
     order_id = params[:order_id]
     new_status = params[:status]
-    order = OrderRepository.new.find(order_id)
-    if order.nil?
-      status 400
-      error = Messages::ORDER_NOT_EXIST_KEY
-      return { error: error, message: Messages.new.get_message(error) }.to_json
-    end
+    order = OrderRepository.new.find!(order_id)
     order.update_status(new_status)
+  rescue OrderException => e
+    error_response(e.key, 400)
   rescue SecurityException => e
     error_response(e.key, 403)
   end

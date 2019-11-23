@@ -61,31 +61,33 @@ describe OrderRepository do
   end
 
   it 'should not find for username from unexistent order' do
-    result = repository.find_for_username(1, another_owner.username)
-    expect(result[:error]).to eq 'there are no orders'
+    expect do
+      repository.find_for_username!(1, another_owner.username)
+    end.to raise_error(NoOrders)
   end
 
   it 'should not find for username from another user order' do
     order = Order.new(user_id: order_owner.id, menu: 'menu_individual')
     repository.save(order)
-    result = repository.find_for_username(order.id, another_owner.username)
-    expect(result[:error]).to eq 'order not exist'
+    expect do
+      repository.find_for_username!(order.id, another_owner.username)
+    end.to raise_error(OrderNotFound)
   end
 
   it 'should not find for username if it not exist' do
     order = Order.new(user_id: order_owner.id, menu: 'menu_individual')
     repository.save(order)
-    result = repository.find_for_username(order.id, 'notexistentusername')
-    expect(result[:error]).to eq 'not_registered'
-    expect(result[:order]).to eq nil
+    expect do
+      repository.find_for_username!(order.id, 'notexistentusername')
+    end.to raise_error(UnexistentUserException)
   end
 
   it 'should find order status for username' do
     order = Order.new(user_id: order_owner.id, menu: 'menu_individual')
     repository.save(order)
-    result = repository.find_for_username(order.id, order_owner.username)
-    expect(result[:order].status_label[:key]).to eq 'recibido'
-    expect(result[:order].status_label[:message]).to eq "Su pedido #{order.id} ha sido RECIBIDO"
+    order = repository.find_for_username!(order.id, order_owner.username)
+    expect(order.status_label[:key]).to eq 'recibido'
+    expect(order.status_label[:message]).to eq "Su pedido #{order.id} ha sido RECIBIDO"
   end
 
   it 'should have a delivery assignment' do
