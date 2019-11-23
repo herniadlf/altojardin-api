@@ -2,11 +2,38 @@ class WeatherRepository < BaseRepository
   self.table_name = :weather
   self.model_class = 'Weather'
 
+  BUENOS_AIRES_ID = 3_433_955
+  APP_ID = ENV['WEATHER_APP_ID'] | ''
+
   def find_by_date(date)
     row = dataset.first(date: date)
-    return load_object(row) unless row.nil?
+    load_object(row) unless row.nil?
+  end
 
-    nil
+  def current_weather
+    date = Date.today.to_s
+    weather = find_by_date(date)
+    return weather unless weather.nil?
+
+    weather = Weather.new(date: date, rain: ask_service)
+    save(weather)
+    weather
+  end
+
+  def ask_service
+    response = Faraday.get("http://api.openweathermap.org/data/2.5/weather?id=#{BUENOS_AIRES_ID}&APPID=#{APP_ID}")
+    body = JSON.parse(response.body)
+    puts('Body inspect')
+    puts(body.inspect)
+    body['weather'][0]['mail'] == 'rain'
+  end
+
+  def ba_id
+    BUENOS_AIRES_ID
+  end
+
+  def app_id
+    APP_ID
   end
 
   def changeset(weather)
