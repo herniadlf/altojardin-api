@@ -63,15 +63,15 @@ describe OrderRepository do
   it 'should not find for username from unexistent order' do
     expect do
       repository.find_for_username!(1, another_owner.username)
-    end.to raise_error(OrderNotFound)
+    end.to raise_error(NoOrders)
   end
 
   it 'should not find for username from another user order' do
     order = Order.new(user_id: order_owner.id, menu: 'menu_individual')
     repository.save(order)
-    expect do
-      repository.find_for_username!(order.id, another_owner.username)
-    end.to raise_error(OrderNotFound)
+    repository.save(Order.new(user_id: another_owner.id, menu: 'menu_individual'))
+    expect { repository.find_for_username!(order.id, another_owner.username) }
+      .to raise_error(OrderNotFound)
   end
 
   it 'should not find for username if it not exist' do
