@@ -10,4 +10,12 @@ DeliveryApi::App.controllers do
     UserRepository.new.delete_all
     'Ok'
   end
+
+  post '/weather' do
+    if ENV['RACK_ENV'] == 'prod'
+      status 401
+      return 'ERROR'
+    end
+    status 200
+  end
 end

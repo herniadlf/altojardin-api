@@ -17,23 +17,23 @@ describe Security do
 
     it 'should authorize a valid request_api_key' do
       ENV['API_KEY'] = some_key
-      expect(security.authorize).to eq true
+      security.authorize
     end
 
     it 'should not authorize a invalid request_api_key' do
       ENV['API_KEY'] = another_key
-      expect(security.authorize).to eq false
+      expect { security.authorize }.to raise_error SecurityException
     end
 
     it 'should authorize if env has no api_key' do
       ENV['API_KEY'] = nil
-      expect(security.authorize).to eq true
+      security.authorize
     end
 
     it 'should not authorize if request_api_key is empty' do
       ENV['API_KEY'] = some_key
       security = described_class.new(nil)
-      expect(security.authorize).to eq false
+      expect { security.authorize }.to raise_error SecurityException
     end
   end
 end
