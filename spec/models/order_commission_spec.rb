@@ -8,9 +8,14 @@ describe OrderCommission do
   end
 
   describe 'No rainy day commission' do
-    it 'should have commission of 5.0 when order is menu_individual and rating is 3' do
+    it 'should have be 5.0 when order is menu_individual and rating is 3' do
       commission = described_class.new(order_price: 100.0, rating: 3, rainy: false)
       expect(commission.calculate).to eq 5.0
+    end
+
+    it 'should have be 8.75 when order is menu_parejas and rating is 3' do
+      commission = described_class.new(order_price: 175.0, rating: 3, rainy: false)
+      expect(commission.calculate).to eq 8.75
     end
   end
 end

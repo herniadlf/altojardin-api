@@ -7,6 +7,8 @@ class OrderCommission
   end
 
   def calculate
-    5.0
+    @order_price * DEFAULT_COMMISSION
   end
+
+  DEFAULT_COMMISSION = 0.05
 end
