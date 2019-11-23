@@ -34,6 +34,13 @@ describe WeatherRepository do
     expect(weather.date.to_s).to eq Date.today.to_s
     expect(weather.rain).to eq true
   end
+
+  it 'should go to service for today with sun' do
+    stub_api_send_weather('Clear')
+    weather = repository.current_weather
+    expect(weather.date.to_s).to eq Date.today.to_s
+    expect(weather.rain).to eq false
+  end
 end
 
 def stub_api_send_weather(main)
