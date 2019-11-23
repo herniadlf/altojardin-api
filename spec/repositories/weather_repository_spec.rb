@@ -12,6 +12,10 @@ describe WeatherRepository do
     weather
   end
 
+  before(:each) do
+    repository.delete_all
+  end
+
   it 'should find weather by date' do
     weather = repository.find_by_date(new_weather.date)
     expect(weather.date.to_s).to eq '2017-06-06'
@@ -37,5 +41,5 @@ def stub_api_send_weather(main)
   app_id = WeatherRepository.new.app_id
   url = "http://api.openweathermap.org/data/2.5/weather?id=#{ba_id}&APPID=#{app_id}"
   stub_request(:get, url)
-    .to_return(status: 400, body: { weather: [{ main: main }] }.to_json, headers: {})
+    .to_return(status: 200, body: { weather: [{ main: main }] }.to_json, headers: {})
 end

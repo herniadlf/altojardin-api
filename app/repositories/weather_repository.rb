@@ -24,8 +24,6 @@ class WeatherRepository < BaseRepository
   def ask_service
     response = Faraday.get("http://api.openweathermap.org/data/2.5/weather?id=#{BUENOS_AIRES_ID}&APPID=#{APP_ID}")
     body = JSON.parse(response.body)
-    puts('Body inspect')
-    puts(body.inspect)
     RAIN_CODES.include? body['weather'][0]['main']
   end
 
