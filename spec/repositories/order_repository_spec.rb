@@ -63,7 +63,7 @@ describe OrderRepository do
   it 'should not find for username from unexistent order' do
     expect do
       repository.find_for_username!(1, another_owner.username)
-    end.to raise_error(NoOrders)
+    end.to raise_error(OrderNotFound)
   end
 
   it 'should not find for username from another user order' do

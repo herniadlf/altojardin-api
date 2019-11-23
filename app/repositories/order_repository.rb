@@ -11,7 +11,7 @@ class OrderRepository < BaseRepository
 
   def find_for_user!(order_id, user)
     order = find(order_id)
-    raise NoOrders if order.nil?
+    raise OrderNotFound if order.nil?
 
     raise OrderNotFound if order.user_id != user.id
 

@@ -67,7 +67,7 @@ describe Client do
     end
 
     it 'should raise order not found when rating an non existing order' do
-      expect { another_client.rate_order(another_order_id + 10, 5) }.to raise_error(NoOrders)
+      expect { another_client.rate_order(another_order_id + 10, 5) }.to raise_error(OrderNotFound)
     end
 
     it 'should raise no orders when client have not done an order and try to rate another' do

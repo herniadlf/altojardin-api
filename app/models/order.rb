@@ -25,6 +25,8 @@ class Order
   end
 
   def update_status(new_status)
+    raise InvalidStatusException if OrderStatus::TO_STATUS_MAP[new_status].nil?
+
     OrderStatus.observer(self, new_status).update
   end
 
