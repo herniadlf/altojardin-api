@@ -27,6 +27,8 @@ GEM
       tzinfo
     coderay (1.1.2)
     concurrent-ruby (1.0.5)
+    crack (0.4.3)
+      safe_yaml (~> 1.0.0)
     cucumber (3.1.2)
       builder (>= 2.1.2)
       cucumber-core (~> 3.2.0)
@@ -70,6 +72,7 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
+    hashdiff (1.0.0)
     http (3.3.0)
       addressable (~> 2.3)
       http-cookie (~> 1.0)
@@ -190,6 +193,7 @@ GEM
       rubocop (>= 0.58.0)
     ruby-progressbar (1.10.0)
     ruby_dep (1.5.0)
+    safe_yaml (1.0.5)
     sequel (5.11.0)
     shellany (0.0.1)
     simple_oauth (0.3.1)
@@ -230,6 +234,10 @@ GEM
       unf_ext
     unf_ext (0.0.7.5)
     unicode-display_width (1.4.0)
+    webmock (3.7.6)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
+      hashdiff (>= 0.4.0, < 2.0.0)
     xpath (3.1.0)
       nokogiri (~> 1.8)
 
@@ -262,6 +270,7 @@ DEPENDENCIES
   therubyracer
   thin
   twitter
+  webmock
 
 RUBY VERSION
    ruby 2.5.1p57

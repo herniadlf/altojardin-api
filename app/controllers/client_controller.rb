@@ -35,8 +35,10 @@ DeliveryApi::App.controllers :client do
 
     client.rate_order(params[:order_id], params[:rating])
     { 'rating': params[:rating] }.to_json
-  rescue UserException, OrderException => e
+  rescue UserException => e
     error_response(e.key, 404)
+  rescue OrderException => e
+    error_response(e.key, 400)
   rescue SecurityException => e
     error_response(e.key, 403)
   end
