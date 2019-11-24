@@ -3,7 +3,7 @@ class WeatherRepository < BaseRepository
   self.model_class = 'Weather'
 
   BUENOS_AIRES_ID = 3_433_955
-  APP_ID = ENV['WEATHER_APP_ID'] | ''
+  APP_ID = ENV['WEATHER_APP_ID']
   RAIN_CODES = %w[Rain Thunderstorm Drizzle Snow Tornado Sand].freeze
 
   def find_by_date(date)
