@@ -6,8 +6,11 @@ class Messages
   ORDER_NOT_EXIST_KEY = 'order not exist'.freeze
   NO_ORDERS_KEY = 'there are no orders'.freeze
   INVALID_MENU = 'invalid_menu'.freeze
-  INVALID_STATUS = 'invalid_status'.freeze
+  INVALID_STATUS = 'invalid_state'.freeze
   ALREADY_REGISTERED = 'already_registered'.freeze
+  ORDER_NOT_DELIVERED = 'order_not_delivered'.freeze
+  INVALID_RATING = 'invalid_rating'.freeze
+  INVALID_API_KEY = 'invalid_api_key'.freeze
 
   def get_message(key)
     messages = {
@@ -19,7 +22,11 @@ class Messages
       NO_ORDERS_KEY => 'No existe el pedido',
       INVALID_MENU => 'Menú inválido',
       INVALID_STATUS => 'Estado inválido',
-      ALREADY_REGISTERED => 'Usuario ya registrado'
+      ALREADY_REGISTERED => 'Usuario ya registrado',
+      INVALID_API_KEY => 'api-key missing or incorrect',
+      ALREADY_REGISTERED => 'Usuario ya registrado',
+      ORDER_NOT_DELIVERED => 'Order no enviada',
+      INVALID_RATING => 'Puntaje no válido'
     }
     messages[key]
   end

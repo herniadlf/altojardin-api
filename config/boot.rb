@@ -1,5 +1,6 @@
 # Defines our messages
 RACK_ENV = ENV['RACK_ENV'] ||= 'development' unless defined?(RACK_ENV)
+ENV['API_KEY'] = 'zaraza' if ENV['API_KEY'].nil?
 PADRINO_ROOT = File.expand_path('..', __dir__) unless defined?(PADRINO_ROOT)
 
 # Load our dependencies
