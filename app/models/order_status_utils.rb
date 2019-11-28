@@ -1,37 +1,32 @@
 module OrderStatusUtils
-  RECEIVED = 0
-  IN_PROGRESS = 1
-  IN_TRANSIT = 2
-  WAITING = 3
-  DELIVERED = 4
-  CANCELLED = 5
-  TO_STATUS_MAP = {
-    'recibido' => RECEIVED,
-    'en_preparacion' => IN_PROGRESS,
-    'en_entrega' => IN_TRANSIT,
-    'en_espera' => WAITING,
-    'entregado' => DELIVERED,
-    'cancelado' => CANCELLED
+  FROM_KEY = {
+    OrderStatusReceived::RECEIVED_KEY => -> { OrderStatusReceived.new },
+    OrderStatusInProgress::IN_PROGRESS_KEY => -> { OrderStatusInProgress.new },
+    OrderStatusInTransit::IN_TRANSIT_KEY => -> { OrderStatusInTransit.new },
+    OrderStatusWaiting::WAITING_KEY => -> { OrderStatusWaiting.new },
+    OrderStatusDelivered::DELIVERED_KEY => -> { OrderStatusDelivered.new },
+    OrderStatusCancelled::CANCELLED_KEY => -> { OrderStatusCancelled.new }
   }.freeze
-  FROM_STATUS_MAP = {
-    RECEIVED => { key: 'recibido', label: 'ha sido RECIBIDO' },
-    IN_PROGRESS => { key: 'en_preparacion', label: 'esta EN PREPARACION' },
-    IN_TRANSIT => { key: 'en_entrega', label: 'esta EN ENTREGA' },
-    WAITING => { key: 'en_espera', label: 'esta EN ESPERA' },
-    DELIVERED => { key: 'entregado', label: 'esta ENTREGADO' },
-    CANCELLED => { key: 'cancelado', label: 'ha sido CANCELADO' }
-  }.freeze
-  IMPL_MAP = {
-    IN_PROGRESS => -> { OrderStatusInProgress.new },
-    IN_TRANSIT => -> { OrderStatusInTransit.new },
-    DELIVERED => -> { OrderStatusDelivered.new }
+  FROM_ID = {
+    OrderStatusReceived::RECEIVED_ID => -> { OrderStatusReceived.new },
+    OrderStatusInProgress::IN_PROGRESS_ID => -> { OrderStatusInProgress.new },
+    OrderStatusInTransit::IN_TRANSIT_ID => -> { OrderStatusInTransit.new },
+    OrderStatusWaiting::WAITING_ID => -> { OrderStatusWaiting.new },
+    OrderStatusDelivered::DELIVERED_ID => -> { OrderStatusDelivered.new },
+    OrderStatusCancelled::CANCELLED_ID => -> { OrderStatusCancelled.new }
   }.freeze
 
-  def self.get_status(order, status)
-    status = TO_STATUS_MAP[status]
-    data = { order: order, status: status }
-    implementation = IMPL_MAP[status].call
-    implementation.load_data(data)
-    implementation
+  def self.from_label(status_label)
+    status_impl = FROM_KEY[status_label]
+    return status_impl.call unless status_impl.nil?
+
+    nil
+  end
+
+  def self.from_id(status_id)
+    status_impl = FROM_ID[status_id]
+    return status_impl.call unless status_impl.nil?
+
+    nil
   end
 end

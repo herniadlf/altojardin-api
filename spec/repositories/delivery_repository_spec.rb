@@ -40,7 +40,7 @@ describe DeliveryRepository do
     order = Order.new(
       user_id: client.id,
       menu: 'menu_individual',
-      status: OrderStatusUtils::RECEIVED
+      status: OrderStatusReceived.new
     )
     OrderRepository.new.save(order)
     order
@@ -81,13 +81,13 @@ describe DeliveryRepository do
       repository.save(juanmotoneta_delivery)
 
       order.assigned_to = pepebicicleta_delivery.id
-      order.status = OrderStatusUtils::IN_TRANSIT
+      order.status = OrderStatusInTransit.new
       OrderRepository.new.save(order)
 
       delivered_order = Order.new(
         user_id: client.id,
         menu: 'menu_individual',
-        status: OrderStatusUtils::DELIVERED,
+        status: OrderStatusDelivered.new,
         assigned_to: pepebicicleta_delivery.id
       )
       OrderRepository.new.save(delivered_order)
@@ -97,7 +97,7 @@ describe DeliveryRepository do
       new_individual_order = Order.new(
         user_id: client.id,
         menu: 'menu_individual',
-        status: OrderStatusUtils::RECEIVED
+        status: OrderStatusReceived.new
       )
       OrderRepository.new.save(new_individual_order)
       new_individual_order
@@ -107,7 +107,7 @@ describe DeliveryRepository do
       new_family_order = Order.new(
         user_id: client.id,
         menu: 'menu_familiar',
-        status: OrderStatusUtils::RECEIVED
+        status: OrderStatusReceived.new
       )
       OrderRepository.new.save(new_family_order)
       new_family_order
@@ -129,7 +129,7 @@ describe DeliveryRepository do
       order = Order.new(
         user_id: client.id,
         menu: 'menu_individual',
-        status: OrderStatusUtils::RECEIVED
+        status: OrderStatusReceived.new
       )
       OrderRepository.new.save(order)
       order
@@ -139,7 +139,7 @@ describe DeliveryRepository do
       new_individual_order = Order.new(
         user_id: client.id,
         menu: 'menu_individual',
-        status: OrderStatusUtils::RECEIVED
+        status: OrderStatusReceived.new
       )
       OrderRepository.new.save(new_individual_order)
       new_individual_order
@@ -152,26 +152,26 @@ describe DeliveryRepository do
       repository.save(juanmotoneta_delivery)
 
       order.assigned_to = pepebicicleta_delivery.id
-      order.status = OrderStatusUtils::IN_TRANSIT
+      order.status = OrderStatusInTransit.new
       OrderRepository.new.save(order)
 
       another_order.assigned_to = juanmotoneta_delivery.id
-      another_order.status = OrderStatusUtils::IN_TRANSIT
+      another_order.status = OrderStatusInTransit.new
       OrderRepository.new.save(another_order)
 
       delivered_order = Order.new(user_id: client.id, menu: 'menu_individual',
-                                  status: OrderStatusUtils::DELIVERED,
+                                  status: OrderStatusDelivered.new,
                                   assigned_to: pepebicicleta_delivery.id)
       OrderRepository.new.save(delivered_order)
 
       old_delivered_order = Order.new(user_id: client.id, menu: 'menu_individual',
-                                      status: OrderStatusUtils::DELIVERED, created_on: '1999-12-15',
+                                      status: OrderStatusDelivered.new, created_on: '1999-12-15',
                                       assigned_to: juanmotoneta_delivery.id)
       OrderRepository.new.save(old_delivered_order)
 
       another_old_delivered_order = Order.new(
         user_id: client.id, menu: 'menu_individual',
-        status: OrderStatusUtils::DELIVERED, created_on: '1999-12-15',
+        status: OrderStatusDelivered.new, created_on: '1999-12-15',
         updated_at: '15-12-99', assigned_to: juanmotoneta_delivery.id
       )
       OrderRepository.new.save(another_old_delivered_order)

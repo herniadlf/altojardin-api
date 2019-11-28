@@ -1,5 +1,6 @@
 require 'integration_spec_helper'
 require_relative '../../app/models/order'
+require_relative '../../app/models/order_status'
 require_relative '../../app/exceptions/order_exception'
 
 describe OrderRepository do
@@ -17,6 +18,8 @@ describe OrderRepository do
     user
   end
 
+  let(:received_status) { OrderStatusReceived.new }
+
   let(:delivery) do
     delivery = Delivery.new(username: 'kitopizzas')
     DeliveryRepository.new.save(delivery)
@@ -24,7 +27,7 @@ describe OrderRepository do
   end
 
   it 'should find created order' do
-    order = Order.new(user_id: order_owner.id, menu: 'menu_individual')
+    order = Order.new(user_id: order_owner.id, menu: 'menu_individual', status: received_status)
     repository.save(order)
     order = repository.find(order.id)
 
@@ -45,19 +48,19 @@ describe OrderRepository do
   end
 
   it 'should find status received in created order' do
-    order = Order.new(user_id: order_owner.id, menu: 'menu_individual')
+    order = Order.new(user_id: order_owner.id, menu: 'menu_individual', status: received_status)
     repository.save(order)
     order = repository.find(order.id)
 
-    expect(order.status).to eq OrderStatusUtils::RECEIVED
+    expect(order.status.id).to eq OrderStatusReceived::RECEIVED_ID
   end
 
   it 'should persist status changes' do
-    order = Order.new(user_id: order_owner.id, menu: 'menu_individual')
+    order = Order.new(user_id: order_owner.id, menu: 'menu_individual', status: received_status)
     repository.save(order)
-    order.status = OrderStatusUtils::IN_PROGRESS
+    order.status = OrderStatusInProgress.new
     repository.save(order)
-    expect(repository.find(order.id).status).to eq OrderStatusUtils::IN_PROGRESS
+    expect(repository.find(order.id).status.id).to eq OrderStatusInProgress::IN_PROGRESS_ID
   end
 
   it 'should not find for username from unexistent order' do
@@ -67,7 +70,7 @@ describe OrderRepository do
   end
 
   it 'should not find for username from another user order' do
-    order = Order.new(user_id: order_owner.id, menu: 'menu_individual')
+    order = Order.new(user_id: order_owner.id, menu: 'menu_individual', status: received_status)
     repository.save(order)
     expect do
       repository.find_for_username!(order.id, another_owner.username)
@@ -75,7 +78,7 @@ describe OrderRepository do
   end
 
   it 'should not find for username if it not exist' do
-    order = Order.new(user_id: order_owner.id, menu: 'menu_individual')
+    order = Order.new(user_id: order_owner.id, menu: 'menu_individual', status: received_status)
     repository.save(order)
     expect do
       repository.find_for_username!(order.id, 'notexistentusername')
@@ -83,24 +86,24 @@ describe OrderRepository do
   end
 
   it 'should find order status for username' do
-    order = Order.new(user_id: order_owner.id, menu: 'menu_individual')
+    order = Order.new(user_id: order_owner.id, menu: 'menu_individual', status: received_status)
     repository.save(order)
     order = repository.find_for_username!(order.id, order_owner.username)
-    expect(order.status_label[:key]).to eq 'recibido'
-    expect(order.status_label[:message]).to eq "Su pedido #{order.id} ha sido RECIBIDO"
+    expect(order.status_message[:key]).to eq 'recibido'
+    expect(order.status_message[:message]).to eq "Su pedido #{order.id} ha sido RECIBIDO"
   end
 
   it 'should have a delivery assignment' do
-    order = Order.new(user_id: order_owner.id, menu: 'menu_individual', assigned_to: delivery.id)
+    order = Order.new(user_id: order_owner.id, menu: 'menu_individual',
+                      status: received_status, assigned_to: delivery.id)
     order.update_status('en_entrega')
     result = repository.find(order.id)
     expect(result.assigned_to).to eq delivery.id
-    expect(result.assigned_to_username).to eq 'kitopizzas'
   end
 
   it 'should be rated' do
-    order = Order.new(user_id: order_owner.id, menu: 'menu_individual', assigned_to: delivery.id)
-    order.update_status('entregado')
+    order = Order.new(user_id: order_owner.id, menu: 'menu_individual',
+                      status: OrderStatusDelivered.new, assigned_to: delivery.id)
     order.rate(3)
     repository.save(order)
     expect(repository.find(order.id).rating).to eq 3
@@ -111,7 +114,8 @@ describe OrderRepository do
   end
 
   it 'should return true when user has orders done' do
-    order = Order.new(user_id: order_owner.id, menu: 'menu_individual', assigned_to: delivery.id)
+    order = Order.new(user_id: order_owner.id, menu: 'menu_individual',
+                      status: received_status, assigned_to: delivery.id)
     repository.save(order)
     expect(repository.find_if_client_has_done_orders(order_owner.username)).to eq true
   end

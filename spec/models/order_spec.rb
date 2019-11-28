@@ -2,7 +2,8 @@ require 'spec_helper'
 require_relative '../../app/exceptions/order_exception'
 
 describe Order do
-  describe described_class.new(user_id: 1, menu: 'menu_individual') do
+  describe described_class.new(user_id: 1, menu: 'menu_individual',
+                               status: OrderStatusReceived.new) do
     it { is_expected.to respond_to(:id) }
     it { is_expected.to respond_to(:user_id) }
     it { is_expected.to respond_to(:menu) }
@@ -13,14 +14,16 @@ describe Order do
   end
 
   describe 'validations' do
+    let(:received_status) { OrderStatusReceived.new }
+
     it 'initial status should be received' do
-      order = described_class.new(user_id: 1, menu: 'menu_individual')
-      expect(order.status).to eq OrderStatusUtils::RECEIVED
+      order = described_class.new(user_id: 1, menu: 'menu_individual', status: received_status)
+      expect(order.status.id).to eq OrderStatusReceived::RECEIVED_ID
     end
 
     it 'should fail on status value not included' do
       expect do
-        described_class.new(user_id: 1, menu: 'menu_individual', status: 10)
+        described_class.new(user_id: 1, menu: 'menu_individual')
       end.to raise_error(InvalidStatusException)
     end
   end
@@ -31,9 +34,11 @@ describe Order do
       ClientRepository.new.save(client)
     end
 
+    let(:received_status) { OrderStatusReceived.new }
+
     let(:order) do
       client = ClientRepository.new.first
-      described_class.new(user_id: client.user_id, menu: 'menu_individual')
+      described_class.new(user_id: client.user_id, menu: 'menu_individual', status: received_status)
     end
     let(:delivery) do
       delivery = Delivery.new(username: 'kitopizzass')
@@ -42,37 +47,37 @@ describe Order do
     end
 
     it 'should observe in progress status' do
-      expect(order.status).to eq OrderStatusUtils::RECEIVED
+      expect(order.status.id).to eq OrderStatusReceived::RECEIVED_ID
       order.update_status('en_preparacion')
-      expect(order.status).to eq OrderStatusUtils::IN_PROGRESS
+      expect(order.status.id).to eq OrderStatusInProgress::IN_PROGRESS_ID
     end
 
     it 'should have waiting status if no deliveries are available when status goes in transit' do
       delivery.available = false
       DeliveryRepository.new.save(delivery)
-      expect(order.status).to eq OrderStatusUtils::RECEIVED
+      expect(order.status.id).to eq OrderStatusReceived::RECEIVED_ID
       order.update_status('en_entrega')
-      expect(order.status).to eq OrderStatusUtils::WAITING
+      expect(order.status.id).to eq OrderStatusWaiting::WAITING_ID
     end
 
     it 'should have in transit status if a delivery is available when status goes in transit' do
       expect(delivery.available).to eq true
-      expect(order.status).to eq OrderStatusUtils::RECEIVED
+      expect(order.status.id).to eq OrderStatusReceived::RECEIVED_ID
       order.update_status('en_entrega')
-      expect(order.status).to eq OrderStatusUtils::IN_TRANSIT
+      expect(order.status.id).to eq OrderStatusInTransit::IN_TRANSIT_ID
     end
 
     it 'should be assigned to delivery' do
       expect(delivery.available).to eq true
       order.update_status('en_entrega')
-      expect(order.status).to eq OrderStatusUtils::IN_TRANSIT
+      expect(order.status.id).to eq OrderStatusInTransit::IN_TRANSIT_ID
       expect(order.assigned_to).to eq delivery.id
     end
 
     it 'should observe delivered status' do
-      expect(order.status).to eq OrderStatusUtils::RECEIVED
+      expect(order.status.id).to eq OrderStatusReceived::RECEIVED_ID
       order.update_status('entregado')
-      expect(order.status).to eq OrderStatusUtils::DELIVERED
+      expect(order.status.id).to eq OrderStatusDelivered::DELIVERED_ID
     end
 
     it 'should rate order' do

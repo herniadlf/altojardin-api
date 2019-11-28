@@ -55,8 +55,11 @@ describe Client do
       another_client
     end
 
+    let(:received_status) { OrderStatusReceived.new }
+
     let(:another_order_id) do
-      another_order = Order.new(user_id: another_client.id, menu: 'menu_individual')
+      another_order = Order.new(user_id: another_client.id, menu: 'menu_individual',
+                                status: received_status)
       another_order.update_status('entregado')
       OrderRepository.new.save(another_order)
       another_order.id
