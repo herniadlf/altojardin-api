@@ -2,6 +2,7 @@ require 'spec_helper'
 require_relative '../../app/repositories/client_repository'
 require_relative '../../app/models/order'
 require_relative '../../app/exceptions/order_exception'
+require_relative '../../app/exceptions/client_exception'
 
 describe Client do
   describe described_class.new(username: 'Carlos', address: 'Av 123', phone: '4121-2314') do

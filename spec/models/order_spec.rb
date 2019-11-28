@@ -15,7 +15,7 @@ describe Order do
   describe 'validations' do
     it 'initial status should be received' do
       order = described_class.new(user_id: 1, menu: 'menu_individual')
-      expect(order.status).to eq OrderStatus::RECEIVED
+      expect(order.status).to eq OrderStatusUtils::RECEIVED
     end
 
     it 'should fail on status value not included' do
@@ -42,37 +42,37 @@ describe Order do
     end
 
     it 'should observe in progress status' do
-      expect(order.status).to eq OrderStatus::RECEIVED
+      expect(order.status).to eq OrderStatusUtils::RECEIVED
       order.update_status('en_preparacion')
-      expect(order.status).to eq OrderStatus::IN_PROGRESS
+      expect(order.status).to eq OrderStatusUtils::IN_PROGRESS
     end
 
     it 'should have waiting status if no deliveries are available when status goes in transit' do
       delivery.available = false
       DeliveryRepository.new.save(delivery)
-      expect(order.status).to eq OrderStatus::RECEIVED
+      expect(order.status).to eq OrderStatusUtils::RECEIVED
       order.update_status('en_entrega')
-      expect(order.status).to eq OrderStatus::WAITING
+      expect(order.status).to eq OrderStatusUtils::WAITING
     end
 
     it 'should have in transit status if a delivery is available when status goes in transit' do
       expect(delivery.available).to eq true
-      expect(order.status).to eq OrderStatus::RECEIVED
+      expect(order.status).to eq OrderStatusUtils::RECEIVED
       order.update_status('en_entrega')
-      expect(order.status).to eq OrderStatus::IN_TRANSIT
+      expect(order.status).to eq OrderStatusUtils::IN_TRANSIT
     end
 
     it 'should be assigned to delivery' do
       expect(delivery.available).to eq true
       order.update_status('en_entrega')
-      expect(order.status).to eq OrderStatus::IN_TRANSIT
+      expect(order.status).to eq OrderStatusUtils::IN_TRANSIT
       expect(order.assigned_to).to eq delivery.id
     end
 
     it 'should observe delivered status' do
-      expect(order.status).to eq OrderStatus::RECEIVED
+      expect(order.status).to eq OrderStatusUtils::RECEIVED
       order.update_status('entregado')
-      expect(order.status).to eq OrderStatus::DELIVERED
+      expect(order.status).to eq OrderStatusUtils::DELIVERED
     end
 
     it 'should rate order' do

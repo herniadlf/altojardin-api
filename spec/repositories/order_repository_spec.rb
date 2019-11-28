@@ -49,15 +49,15 @@ describe OrderRepository do
     repository.save(order)
     order = repository.find(order.id)
 
-    expect(order.status).to eq OrderStatus::RECEIVED
+    expect(order.status).to eq OrderStatusUtils::RECEIVED
   end
 
   it 'should persist status changes' do
     order = Order.new(user_id: order_owner.id, menu: 'menu_individual')
     repository.save(order)
-    order.status = OrderStatus::IN_PROGRESS
+    order.status = OrderStatusUtils::IN_PROGRESS
     repository.save(order)
-    expect(repository.find(order.id).status).to eq OrderStatus::IN_PROGRESS
+    expect(repository.find(order.id).status).to eq OrderStatusUtils::IN_PROGRESS
   end
 
   it 'should not find for username from unexistent order' do
