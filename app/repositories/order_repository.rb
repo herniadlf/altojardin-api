@@ -41,11 +41,17 @@ class OrderRepository < BaseRepository
 
   protected
 
+  def load_object(a_record)
+    status_id = a_record[:status]
+    a_record[:status] = OrderStatusUtils.from_id(status_id) unless status_id.nil?
+    super
+  end
+
   def changeset(order)
     {
       user_id: order.user_id,
       menu: order.menu,
-      status: order.status,
+      status: order.status.id,
       assigned_to: order.assigned_to,
       rating: order.rating
     }

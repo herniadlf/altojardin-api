@@ -2,6 +2,7 @@ require 'spec_helper'
 require_relative '../../app/repositories/client_repository'
 require_relative '../../app/models/order'
 require_relative '../../app/exceptions/order_exception'
+require_relative '../../app/exceptions/client_exception'
 
 describe Client do
   describe described_class.new(username: 'Carlos', address: 'Av 123', phone: '4121-2314') do
@@ -54,8 +55,11 @@ describe Client do
       another_client
     end
 
+    let(:received_status) { OrderStatusReceived.new }
+
     let(:another_order_id) do
-      another_order = Order.new(user_id: another_client.id, menu: 'menu_individual')
+      another_order = Order.new(user_id: another_client.id, menu: 'menu_individual',
+                                status: received_status)
       another_order.update_status('entregado')
       OrderRepository.new.save(another_order)
       another_order.id

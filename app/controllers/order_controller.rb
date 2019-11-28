@@ -9,6 +9,7 @@ DeliveryApi::App.controllers do
 
     params[:user_id] = client.id
     params[:menu] = params['order']
+    params[:status] = OrderStatusUtils.initial_status
 
     order = Order.new(params)
     OrderRepository.new.save(order)
@@ -26,9 +27,9 @@ DeliveryApi::App.controllers do
     username = params[:username]
     order = OrderRepository.new.find_for_username!(order_id, username)
     {
-      'order_status': order.status_label[:key],
+      'order_status': order.status_message[:key],
       'assigned_to': order.assigned_to_username,
-      'message': order.status_label[:message]
+      'message': order.status_message[:message]
     }.to_json
   rescue UserException, OrderException => e
     error_response(e.key, 400)
