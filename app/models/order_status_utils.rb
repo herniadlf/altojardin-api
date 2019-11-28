@@ -30,7 +30,7 @@ module OrderStatusUtils
     nil
   end
 
-  def self.get_default
+  def self.initial_status
     OrderStatusReceived.new
   end
 end
