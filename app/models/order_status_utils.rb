@@ -29,4 +29,8 @@ module OrderStatusUtils
 
     nil
   end
+
+  def self.get_default
+    OrderStatusReceived.new
+  end
 end

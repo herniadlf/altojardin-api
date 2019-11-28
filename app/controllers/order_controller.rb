@@ -9,6 +9,7 @@ DeliveryApi::App.controllers do
 
     params[:user_id] = client.id
     params[:menu] = params['order']
+    params[:status] = OrderStatusUtils.get_default
 
     order = Order.new(params)
     OrderRepository.new.save(order)
