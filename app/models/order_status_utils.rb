@@ -1,3 +1,4 @@
+require_relative 'order_status_cancelled'
 module OrderStatusUtils
   FROM_KEY = {
     OrderStatusReceived::RECEIVED_KEY => -> { OrderStatusReceived.new },

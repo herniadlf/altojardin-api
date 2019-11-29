@@ -1,6 +1,7 @@
 require_relative 'order_status'
 require_relative 'order_status_in_transit'
 require_relative 'order_status_delivered'
+require_relative '../exceptions/order_status_exception'
 
 class OrderStatusCancelled < OrderStatus
   CANCELLED_ID = 5
