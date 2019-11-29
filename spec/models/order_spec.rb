@@ -101,6 +101,14 @@ describe Order do
         order.cancel
       end.to raise_error(CannotCancelOrderException)
     end
+
+    it 'should not cancel order if its waiting' do
+      expect(delivery.available).to eq true
+      order.update_status('en_espera')
+      expect do
+        order.cancel
+      end.to raise_error(CannotCancelOrderException)
+    end
   end
 
   describe 'rating' do
