@@ -18,6 +18,11 @@ class OrderRepository < BaseRepository
     order
   end
 
+  def find_by_delivery_id(delivery_id)
+    rows = dataset.where(assigned_to: delivery_id)
+    load_collection(rows) unless rows.nil?
+  end
+
   def find_if_client_has_done_orders(username)
     DB['select * from orders
         inner join clients on clients.user_id = orders.user_id
