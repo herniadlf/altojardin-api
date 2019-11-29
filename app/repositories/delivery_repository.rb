@@ -54,27 +54,13 @@ class DeliveryRepository < BaseRepository
   end
 
   def select_delivery(possible_deliveries)
-    return find(possible_deliveries[0].user_id) if possible_deliveries.count == 1
+    return possible_deliveries.first if possible_deliveries.count == 1
 
     if possible_deliveries[0].occupied_quantity != possible_deliveries[1].occupied_quantity
-      return find(possible_deliveries[0].user_id)
+      return possible_deliveries.first
     end
 
-    find_delivery_with_fewest_shippings_in_the_day(possible_deliveries)
-  end
-
-  def find_delivery_with_fewest_shippings_in_the_day(deliveries)
-    user_id = DB["
-      select deliveries.user_id, count(distinct orders) as quantity
-      from deliveries left join orders on orders.assigned_to = deliveries.user_id
-      where deliveries.user_id in ?
-      and orders.created_on = now()::date or orders.created_on is null
-      group by deliveries.user_id
-      order by quantity asc
-      limit 1", deliveries.map(&:user_id)
-    ].map(:user_id)[0]
-
-    find(user_id)
+    possible_deliveries.min_by(&:orders_done_today)
   end
 
   private
