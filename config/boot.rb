@@ -34,8 +34,8 @@ Bundler.require(:default, RACK_ENV)
 # Add your before (RE)load hooks here
 #
 Padrino.before_load do
+  Padrino.dependency_paths << Padrino.root('app/exceptions/**/*.rb')
   Padrino.dependency_paths << Padrino.root('app/repositories/**/*.rb')
-  Padrino.dependency_paths << Padrino.root('app/security/**/*.rb')
 end
 
 #
