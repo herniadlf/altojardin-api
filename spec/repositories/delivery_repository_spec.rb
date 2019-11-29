@@ -125,6 +125,13 @@ describe DeliveryRepository do
       expect(pepebicicleta_delivery.occupied_quantity).to eq 1
     end
 
+    it 'should find delivery with occupancy equal to 4' do
+      new_family_order.assigned_to = juanmotoneta_delivery.id
+      new_family_order.status = OrderStatusInTransit.new
+      OrderRepository.new.save(new_family_order)
+      expect(repository.find(juanmotoneta_delivery.id).occupied_quantity).to eq 4
+    end
+
     it 'should find delivery with minimum space available for a individual order' do
       delivery = repository.find_first_available_for_order(new_individual_order)
       expect(delivery.username).to eq 'pepebicicleta'
