@@ -45,7 +45,10 @@ class DeliveryRepository < BaseRepository
     user = UserRepository.new.find(a_record[:user_id])
     a_record[:id] = user.id
     a_record[:username] = user.username
-    a_record[:occupied_quantity] = OrderRepository.new.find_by_delivery_id(user.id).length
+    orders_in_transit = OrderRepository.new.find_by_delivery_id(user.id).select do |order|
+      order.status.id == OrderStatusInTransit::IN_TRANSIT_ID
+    end
+    a_record[:occupied_quantity] = orders_in_transit.length
     super
   end
 
