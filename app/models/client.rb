@@ -2,6 +2,7 @@ require_relative 'user'
 require_relative '../messages/messages'
 require_relative '../repositories/order_repository'
 require_relative '../exceptions/order_exception'
+require_relative '../exceptions/client_exception'
 
 class Client < User
   attr_accessor :address, :phone, :user_id
