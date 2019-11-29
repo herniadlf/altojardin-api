@@ -11,6 +11,7 @@ class Messages
   ORDER_NOT_DELIVERED = 'order_not_delivered'.freeze
   INVALID_RATING = 'invalid_rating'.freeze
   INVALID_API_KEY = 'invalid_api_key'.freeze
+  CANNOT_CANCEL_ORDER = 'cannot_cancel'.freeze
 
   def get_message(key)
     messages = {
@@ -26,7 +27,8 @@ class Messages
       INVALID_API_KEY => 'api-key missing or incorrect',
       ALREADY_REGISTERED => 'Usuario ya registrado',
       ORDER_NOT_DELIVERED => 'Order no enviada',
-      INVALID_RATING => 'Puntaje no válido'
+      INVALID_RATING => 'Puntaje no válido',
+      CANNOT_CANCEL_ORDER => 'No puede cancelar el pedido'
     }
     messages[key]
   end

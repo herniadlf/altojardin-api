@@ -1,5 +1,6 @@
 require 'spec_helper'
 require_relative '../../app/exceptions/order_exception'
+require_relative '../../app/exceptions/order_status_exception'
 
 describe Order do
   let(:delivery) do
@@ -83,6 +84,14 @@ describe Order do
       expect(order.status.id).to eq OrderStatusReceived::RECEIVED_ID
       order.cancel
       expect(order.status.id).to eq OrderStatusCancelled::CANCELLED_ID
+    end
+
+    it 'should not cancel order if its in transit' do
+      expect(delivery.available).to eq true
+      order.update_status('en_entrega')
+      expect do
+        order.cancel
+      end.to raise_error(CannotCancelOrderException)
     end
   end
 
