@@ -47,10 +47,9 @@ class DeliveryRepository < BaseRepository
     user = UserRepository.new.find(a_record[:user_id])
     a_record[:id] = user.id
     a_record[:username] = user.username
-    orders_weight = OrderRepository.new.find_by_delivery_id(user.id).map do |order|
-      order.status.id == OrderStatusInTransit::IN_TRANSIT_ID ? order.weight : 0
-    end
-    a_record[:occupied_quantity] = orders_weight.sum
+    orders = OrderRepository.new.find_by_delivery_id(user.id)
+    a_record[:occupied_quantity] = calculate_orders_weight(orders)
+    a_record[:orders_done_today] = calculate_orders_done_today(orders)
     super
   end
 
@@ -76,5 +75,21 @@ class DeliveryRepository < BaseRepository
     ].map(:user_id)[0]
 
     find(user_id)
+  end
+
+  private
+
+  def calculate_orders_weight(orders)
+    orders_weight = orders.map do |order|
+      order.status.id == OrderStatusInTransit::IN_TRANSIT_ID ? order.weight : 0
+    end
+    orders_weight.sum
+  end
+
+  def calculate_orders_done_today(orders)
+    orders_done_today = orders.select do |order|
+      order.status.id == OrderStatusDelivered::DELIVERED_ID && order.created_on == Date.today
+    end
+    orders_done_today.length
   end
 end

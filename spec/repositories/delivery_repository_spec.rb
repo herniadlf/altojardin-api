@@ -132,6 +132,12 @@ describe DeliveryRepository do
       expect(repository.find(juanmotoneta_delivery.id).occupied_quantity).to eq 4
     end
 
+    it 'should have have 1 order done' do
+      id = pepebicicleta_delivery.id
+      pepebicicleta_delivery = repository.find(id)
+      expect(pepebicicleta_delivery.orders_done_today).to eq 1
+    end
+
     it 'should find delivery with minimum space available for a individual order' do
       delivery = repository.find_first_available_for_order(new_individual_order)
       expect(delivery.username).to eq 'pepebicicleta'
