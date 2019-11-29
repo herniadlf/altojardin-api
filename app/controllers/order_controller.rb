@@ -48,4 +48,15 @@ DeliveryApi::App.controllers do
   rescue SecurityException => e
     error_response(e.key, 403)
   end
+
+  put 'order/:order_id/cancel', provides: :json do
+    Security.new(request.env['HTTP_API_KEY']).authorize
+    order_id = params[:order_id]
+    order = OrderRepository.new.find!(order_id)
+    order.cancel
+  rescue OrderException => e
+    error_response(e.key, 400)
+  rescue SecurityException => e
+    error_response(e.key, 403)
+  end
 end

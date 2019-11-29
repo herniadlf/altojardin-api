@@ -81,7 +81,7 @@ describe Order do
 
     it 'should change to cancelled status' do
       expect(order.status.id).to eq OrderStatusReceived::RECEIVED_ID
-      order.update_status('cancelado')
+      order.cancel
       expect(order.status.id).to eq OrderStatusCancelled::CANCELLED_ID
     end
   end
