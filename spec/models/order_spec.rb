@@ -2,6 +2,22 @@ require 'spec_helper'
 require_relative '../../app/exceptions/order_exception'
 
 describe Order do
+  let(:delivery) do
+    delivery = Delivery.new(username: 'kitopizzass')
+    DeliveryRepository.new.save(delivery)
+    delivery
+  end
+  let(:order) do
+    client = ClientRepository.new.first
+    described_class.new(user_id: client.user_id, menu: 'menu_individual', status: received_status)
+  end
+  let(:received_status) { OrderStatusReceived.new }
+
+  before(:each) do
+    client = Client.new(username: 'username', address: 'Paseo Colon 111', phone: '1234-1243')
+    ClientRepository.new.save(client)
+  end
+
   describe described_class.new(user_id: 1, menu: 'menu_individual',
                                status: OrderStatusReceived.new) do
     it { is_expected.to respond_to(:id) }
@@ -28,25 +44,8 @@ describe Order do
     end
   end
 
-  describe 'status observer' do
-    before(:each) do
-      client = Client.new(username: 'username', address: 'Paseo Colon 111', phone: '1234-1243')
-      ClientRepository.new.save(client)
-    end
-
-    let(:received_status) { OrderStatusReceived.new }
-
-    let(:order) do
-      client = ClientRepository.new.first
-      described_class.new(user_id: client.user_id, menu: 'menu_individual', status: received_status)
-    end
-    let(:delivery) do
-      delivery = Delivery.new(username: 'kitopizzass')
-      DeliveryRepository.new.save(delivery)
-      delivery
-    end
-
-    it 'should observe in progress status' do
+  describe 'status changes' do
+    it 'should change to in progress status' do
       expect(order.status.id).to eq OrderStatusReceived::RECEIVED_ID
       order.update_status('en_preparacion')
       expect(order.status.id).to eq OrderStatusInProgress::IN_PROGRESS_ID
@@ -74,12 +73,20 @@ describe Order do
       expect(order.assigned_to).to eq delivery.id
     end
 
-    it 'should observe delivered status' do
+    it 'should change to delivered status' do
       expect(order.status.id).to eq OrderStatusReceived::RECEIVED_ID
       order.update_status('entregado')
       expect(order.status.id).to eq OrderStatusDelivered::DELIVERED_ID
     end
 
+    it 'should change to cancelled status' do
+      expect(order.status.id).to eq OrderStatusReceived::RECEIVED_ID
+      order.update_status('cancelado')
+      expect(order.status.id).to eq OrderStatusCancelled::CANCELLED_ID
+    end
+  end
+
+  describe 'rating' do
     it 'should rate order' do
       order.update_status('entregado')
       order.rate(2)
