@@ -45,6 +45,7 @@ class DeliveryRepository < BaseRepository
     user = UserRepository.new.find(a_record[:user_id])
     a_record[:id] = user.id
     a_record[:username] = user.username
+    a_record[:occupied_quantity] = OrderRepository.new.find_by_delivery_id(user.id).length
     super
   end
 
