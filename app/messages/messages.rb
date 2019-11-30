@@ -28,7 +28,7 @@ class Messages
       ALREADY_REGISTERED => 'Usuario ya registrado',
       ORDER_NOT_DELIVERED => 'Order no enviada',
       INVALID_RATING => 'Puntaje no válido',
-      CANNOT_CANCEL_ORDER => 'No puede cancelar el pedido'
+      CANNOT_CANCEL_ORDER => 'El pedido ya no puede cancelarse'
     }
     messages[key]
   end
