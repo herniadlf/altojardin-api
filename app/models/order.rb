@@ -28,6 +28,11 @@ class Order
     @rating = rating
   end
 
+  def cancel
+    update_status(OrderStatusCancelled::CANCELLED_KEY)
+    Messages::SUCCESSFUL_CANCEL
+  end
+
   def update_status(new_status_label)
     new_status = OrderStatusUtils.from_label(new_status_label)
     raise InvalidStatusException if new_status.nil?
