@@ -23,7 +23,7 @@ DeliveryApi::App.controllers do
   get 'client/:username/historical', provides: :json do
     Security.new(request.env['HTTP_API_KEY']).authorize
     orders = OrderRepository
-             .new.find_by_client_username(params['username'])
+             .new.find_historic_by_client_username(params['username'])
              .map do |order|
       {
         menu: order.menu,

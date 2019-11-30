@@ -112,8 +112,8 @@ describe OrderRepository do
   it 'should find orders assigned to client' do
     order = Order.new(user_id: order_owner.id, menu: 'menu_individual',
                       status: received_status)
-    repository.save(order)
-    result = repository.find_by_client_username(order_owner.username)
+    order.update_status('entregado')
+    result = repository.find_historic_by_client_username(order_owner.username)
     expect(result.first.id).to eq order.id
   end
 

@@ -23,9 +23,9 @@ class OrderRepository < BaseRepository
     load_collection(rows) unless rows.nil?
   end
 
-  def find_by_client_username(username)
+  def find_historic_by_client_username(username)
     client = ClientRepository.new.find_by_username!(username)
-    rows = dataset.where(user_id: client.id)
+    rows = dataset.where(user_id: client.id, status: OrderStatusDelivered::DELIVERED_ID)
     load_collection(rows) unless rows.nil?
   end
 
