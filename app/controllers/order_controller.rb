@@ -20,6 +20,26 @@ DeliveryApi::App.controllers do
     error_response(e.key, 403)
   end
 
+  get 'client/:username/historical', provides: :json do
+    Security.new(request.env['HTTP_API_KEY']).authorize
+    orders = OrderRepository
+             .new.find_historic_by_client_username(params['username'])
+             .map do |order|
+      {
+        menu: order.menu,
+        date: order.created_on,
+        assigned_to: order.assigned_to_username,
+        id: order.id
+      }
+    end
+
+    orders.to_json
+  rescue UserException, OrderException => e
+    error_response(e.key, 400)
+  rescue SecurityException => e
+    error_response(e.key, 403)
+  end
+
   get 'client/:username/order/:order_id', provides: :json do
     Security.new(request.env['HTTP_API_KEY']).authorize
 
