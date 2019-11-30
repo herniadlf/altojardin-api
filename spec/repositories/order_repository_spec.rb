@@ -109,6 +109,14 @@ describe OrderRepository do
     expect(result.first.id).to eq order.id
   end
 
+  it 'should find orders assigned to client' do
+    order = Order.new(user_id: order_owner.id, menu: 'menu_individual',
+                      status: received_status)
+    repository.save(order)
+    result = repository.find_by_client_username(order_owner.username)
+    expect(result.first.id).to eq order.id
+  end
+
   it 'should be rated' do
     order = Order.new(user_id: order_owner.id, menu: 'menu_individual',
                       status: OrderStatusDelivered.new, assigned_to: delivery.id)

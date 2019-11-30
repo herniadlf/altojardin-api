@@ -23,6 +23,12 @@ class OrderRepository < BaseRepository
     load_collection(rows) unless rows.nil?
   end
 
+  def find_by_client_username(username)
+    client = ClientRepository.new.find_by_username!(username)
+    rows = dataset.where(user_id: client.id)
+    load_collection(rows) unless rows.nil?
+  end
+
   def find_if_client_has_done_orders(username)
     DB['select * from orders
         inner join clients on clients.user_id = orders.user_id
