@@ -54,6 +54,7 @@ class DeliveryRepository < BaseRepository
   end
 
   def select_delivery(possible_deliveries)
+    possible_deliveries = possible_deliveries.sort_by(&:occupied_quantity).reverse
     return possible_deliveries.first if possible_deliveries.count == 1
 
     if possible_deliveries[0].occupied_quantity != possible_deliveries[1].occupied_quantity
