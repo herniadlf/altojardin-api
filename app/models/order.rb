@@ -30,6 +30,7 @@ class Order
 
   def cancel
     update_status(OrderStatusCancelled::CANCELLED_KEY)
+    Messages::SUCCESSFUL_CANCEL
   end
 
   def update_status(new_status_label)

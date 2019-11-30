@@ -53,7 +53,8 @@ DeliveryApi::App.controllers do
     Security.new(request.env['HTTP_API_KEY']).authorize
     order_id = params[:order_id]
     order = OrderRepository.new.find!(order_id)
-    order.cancel
+    message = order.cancel
+    { message: Messages.new.get_message(message) }.to_json
   rescue OrderException => e
     error_response(e.key, 400)
   rescue SecurityException => e
