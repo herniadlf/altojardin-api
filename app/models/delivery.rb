@@ -3,7 +3,7 @@ require_relative '../../app/models/user'
 class Delivery < User
   attr_accessor :user_id, :available, :occupied_quantity, :orders_done_today
 
-  CAPACITY = 4
+  CAPACITY = 3
 
   def initialize(data = {})
     super data

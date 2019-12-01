@@ -129,7 +129,7 @@ describe DeliveryRepository do
       new_family_order.assigned_to = juanmotoneta_delivery.id
       new_family_order.status = OrderStatusInTransit.new
       OrderRepository.new.save(new_family_order)
-      expect(repository.find(juanmotoneta_delivery.id).occupied_quantity).to eq 4
+      expect(repository.find(juanmotoneta_delivery.id).occupied_quantity).to eq 3
     end
 
     it 'should have pepebicicleta have 1 order done' do
