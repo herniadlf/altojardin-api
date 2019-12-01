@@ -6,7 +6,10 @@ class OrderStatus
     new_status.update(order)
   end
 
+  def validate_previous(previous_status); end
+
   def update(order)
+    validate_previous(order.status)
     order.status = self
     OrderRepository.new.save(order)
   end

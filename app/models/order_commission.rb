@@ -3,9 +3,14 @@ class OrderCommission
   def initialize(data = {})
     @order_price = data[:order_price]
     @rating = data[:rating]
+    @status = data[:status]
   end
 
   def calculate
+    if @status != OrderStatusDelivered::DELIVERED_ID
+      raise CommissionException, 'order_not_delivered'
+    end
+
     rating_commission = RATING_COMMISSION[@rating]
     if WeatherRepository.new.current_weather.rain
       rating_commission += BONUS_RAINING_RATING_COMMISSION
