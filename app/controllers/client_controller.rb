@@ -1,8 +1,8 @@
 require_relative '../models/client'
 require_relative '../repositories/client_repository'
 require_relative '../messages/messages'
-require_relative '../security/security'
 require_relative '../exceptions/user_exception'
+require_relative '../security/security'
 require_relative 'utils'
 
 DeliveryApi::App.controllers :client do

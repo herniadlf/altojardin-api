@@ -18,6 +18,17 @@ class OrderRepository < BaseRepository
     order
   end
 
+  def find_by_delivery_id(delivery_id)
+    rows = dataset.where(assigned_to: delivery_id)
+    load_collection(rows) unless rows.nil?
+  end
+
+  def find_historic_by_client_username(username)
+    client = ClientRepository.new.find_by_username!(username)
+    rows = dataset.where(user_id: client.id, status: OrderStatusDelivered::DELIVERED_ID)
+    load_collection(rows) unless rows.nil?
+  end
+
   def find_if_client_has_done_orders(username)
     DB['select * from orders
         inner join clients on clients.user_id = orders.user_id
@@ -41,11 +52,17 @@ class OrderRepository < BaseRepository
 
   protected
 
+  def load_object(a_record)
+    status_id = a_record[:status]
+    a_record[:status] = OrderStatusUtils.from_id(status_id) unless status_id.nil?
+    super
+  end
+
   def changeset(order)
     {
       user_id: order.user_id,
       menu: order.menu,
-      status: order.status,
+      status: order.status.id,
       assigned_to: order.assigned_to,
       rating: order.rating
     }

@@ -40,7 +40,7 @@ describe DeliveryRepository do
     order = Order.new(
       user_id: client.id,
       menu: 'menu_individual',
-      status: OrderStatus::RECEIVED
+      status: OrderStatusReceived.new
     )
     OrderRepository.new.save(order)
     order
@@ -81,13 +81,13 @@ describe DeliveryRepository do
       repository.save(juanmotoneta_delivery)
 
       order.assigned_to = pepebicicleta_delivery.id
-      order.status = OrderStatus::IN_TRANSIT
+      order.status = OrderStatusInTransit.new
       OrderRepository.new.save(order)
 
       delivered_order = Order.new(
         user_id: client.id,
         menu: 'menu_individual',
-        status: OrderStatus::DELIVERED,
+        status: OrderStatusDelivered.new,
         assigned_to: pepebicicleta_delivery.id
       )
       OrderRepository.new.save(delivered_order)
@@ -97,7 +97,7 @@ describe DeliveryRepository do
       new_individual_order = Order.new(
         user_id: client.id,
         menu: 'menu_individual',
-        status: OrderStatus::RECEIVED
+        status: OrderStatusReceived.new
       )
       OrderRepository.new.save(new_individual_order)
       new_individual_order
@@ -107,10 +107,41 @@ describe DeliveryRepository do
       new_family_order = Order.new(
         user_id: client.id,
         menu: 'menu_familiar',
-        status: OrderStatus::RECEIVED
+        status: OrderStatusReceived.new
       )
       OrderRepository.new.save(new_family_order)
       new_family_order
+    end
+
+    it 'should find delivery with occupancy equal to 0' do
+      id = juanmotoneta_delivery.id
+      juanmotoneta_delivery = repository.find(id)
+      expect(juanmotoneta_delivery.occupied_quantity).to eq 0
+    end
+
+    it 'should find delivery with occupancy equal to 1' do
+      id = pepebicicleta_delivery.id
+      pepebicicleta_delivery = repository.find(id)
+      expect(pepebicicleta_delivery.occupied_quantity).to eq 1
+    end
+
+    it 'should find delivery with occupancy equal to 4' do
+      new_family_order.assigned_to = juanmotoneta_delivery.id
+      new_family_order.status = OrderStatusInTransit.new
+      OrderRepository.new.save(new_family_order)
+      expect(repository.find(juanmotoneta_delivery.id).occupied_quantity).to eq 3
+    end
+
+    it 'should have pepebicicleta have 1 order done' do
+      id = pepebicicleta_delivery.id
+      pepebicicleta_delivery = repository.find(id)
+      expect(pepebicicleta_delivery.orders_done_today).to eq 1
+    end
+
+    it 'should have juanmotoneta have 0 order done' do
+      id = juanmotoneta_delivery.id
+      juanmotoneta_delivery = repository.find(id)
+      expect(juanmotoneta_delivery.orders_done_today).to eq 0
     end
 
     it 'should find delivery with minimum space available for a individual order' do
@@ -129,7 +160,7 @@ describe DeliveryRepository do
       order = Order.new(
         user_id: client.id,
         menu: 'menu_individual',
-        status: OrderStatus::RECEIVED
+        status: OrderStatusReceived.new
       )
       OrderRepository.new.save(order)
       order
@@ -139,7 +170,7 @@ describe DeliveryRepository do
       new_individual_order = Order.new(
         user_id: client.id,
         menu: 'menu_individual',
-        status: OrderStatus::RECEIVED
+        status: OrderStatusReceived.new
       )
       OrderRepository.new.save(new_individual_order)
       new_individual_order
@@ -152,26 +183,26 @@ describe DeliveryRepository do
       repository.save(juanmotoneta_delivery)
 
       order.assigned_to = pepebicicleta_delivery.id
-      order.status = OrderStatus::IN_TRANSIT
+      order.status = OrderStatusInTransit.new
       OrderRepository.new.save(order)
 
       another_order.assigned_to = juanmotoneta_delivery.id
-      another_order.status = OrderStatus::IN_TRANSIT
+      another_order.status = OrderStatusInTransit.new
       OrderRepository.new.save(another_order)
 
       delivered_order = Order.new(user_id: client.id, menu: 'menu_individual',
-                                  status: OrderStatus::DELIVERED,
+                                  status: OrderStatusDelivered.new,
                                   assigned_to: pepebicicleta_delivery.id)
       OrderRepository.new.save(delivered_order)
 
       old_delivered_order = Order.new(user_id: client.id, menu: 'menu_individual',
-                                      status: OrderStatus::DELIVERED, created_on: '1999-12-15',
+                                      status: OrderStatusDelivered.new, created_on: '1999-12-15',
                                       assigned_to: juanmotoneta_delivery.id)
       OrderRepository.new.save(old_delivered_order)
 
       another_old_delivered_order = Order.new(
         user_id: client.id, menu: 'menu_individual',
-        status: OrderStatus::DELIVERED, created_on: '1999-12-15',
+        status: OrderStatusDelivered.new, created_on: '1999-12-15',
         updated_at: '15-12-99', assigned_to: juanmotoneta_delivery.id
       )
       OrderRepository.new.save(another_old_delivered_order)

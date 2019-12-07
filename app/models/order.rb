@@ -1,5 +1,5 @@
-require_relative 'order_status'
 require_relative '../../app/exceptions/order_exception'
+require_relative 'order_status_utils'
 
 class Order
   include ActiveModel::Validations
@@ -22,22 +22,27 @@ class Order
   end
 
   def rate(rating)
-    raise OrderNotDelivered if @status != OrderStatus::DELIVERED
+    raise OrderNotDelivered if @status.id != OrderStatusDelivered::DELIVERED_ID
     raise RatingRangeNotValid if (rating < 1) || (rating > 5)
 
     @rating = rating
   end
 
-  def update_status(new_status)
-    raise InvalidStatusException if OrderStatus::TO_STATUS_MAP[new_status].nil?
-
-    OrderStatus.observer(self, new_status).update
+  def cancel
+    update_status(OrderStatusCancelled::CANCELLED_KEY)
+    Messages::SUCCESSFUL_CANCEL
   end
 
-  def status_label
-    status = OrderStatus::FROM_STATUS_MAP[@status]
-    key = status[:key]
-    message = "Su pedido #{id} #{status[:label]}"
+  def update_status(new_status_label)
+    new_status = OrderStatusUtils.from_label(new_status_label)
+    raise InvalidStatusException if new_status.nil?
+
+    @status.change_order_to(self, new_status)
+  end
+
+  def status_message
+    key = status.key
+    message = "Su pedido #{id} #{status.label}"
     { key: key, message: message }
   end
 
@@ -60,7 +65,7 @@ class Order
     @id = data[:id]
     @user_id = data[:user_id]
     @menu = data[:menu]
-    @status = data[:status].nil? ? OrderStatus::RECEIVED : data[:status]
+    @status = data[:status]
   end
 
   def initialize_nullables(data = {})
@@ -87,10 +92,8 @@ class Order
   end
 
   def valid_status(status)
-    valid = status.nil? || VALID_STATUS.include?(status)
-    raise InvalidStatusException unless valid
+    raise InvalidStatusException if status.nil?
   end
 
   VALID_MENUS = %w[menu_individual menu_pareja menu_familiar].freeze
-  VALID_STATUS = OrderStatus::RECEIVED..OrderStatus::CANCELLED.freeze
 end
