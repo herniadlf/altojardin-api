@@ -17,5 +17,21 @@ In case of feature branch develop, when you end your work you must merge with de
 1. Run **_vagrant up_** to build the vm. Then, Run **_vagrant ssh_** to working on it.
 1. Run **_bundle install --without staging production_**, to install all application dependencies
 1. Run **_bundle exec rake_**, to run all tests and ensure everything is properly setup
-1. Run **_RACK_ENV=development bundle exec rake db:migrate db:seed_**, to setup the development database
+1. Run **_RACK_ENV=development bundle exec rake db:migrate_**, to setup the development database
 1. Run **_bundle exec padrino start -h 0.0.0.0_**, to start the application
+ 
+
+## URLs de la API
+
+- Staging => https://altojardin-tp2-api-staging.herokuapp.com
+- Prod => https://altojardin-tp2-api-prod.herokuapp.com
+
+## API keys
+
+- Staging => df997932-0b3e-11ea-8d71-362b9e155667
+- Prod => fa82c3f2-0b3e-11ea-8d71-362b9e155667
+
+## Nombre de los bots
+
+- Staging => AltoJardinLaNonaSTBot
+- Prod => AltoJardinLaNonaBot
